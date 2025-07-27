@@ -1,0 +1,19 @@
+package com.plazoleta.plazoleta.plazoleta.domain.utils;
+
+public class DomainConstants {
+
+    private DomainConstants() {
+        throw new IllegalStateException("Utility class");
+    }
+
+    public static final int PHONE_MAX_LENGTH = 13;
+
+    public static final String ERROR_REQUIRED_RESTAURANT_NAME = "El nombre del restaurante es obligatorio";
+    public static final String ERROR_REQUIRED_NIT = "El NIT del restaurante es obligatorio";
+    public static final String ERROR_REQUIRED_ADDRESS = "La dirección del restaurante es obligatoria";
+    public static final String ERROR_REQUIRED_PHONE = "El teléfono del restaurante es obligatorio";
+    public static final String ERROR_REQUIRED_LOGO_URL = "La URL del logo es obligatoria";
+    public static final String ERROR_REQUIRED_OWNER_ID = "El ID del propietario es obligatorio";
+
+    public static final String OWNER = "PROPIETARIO";
+}
