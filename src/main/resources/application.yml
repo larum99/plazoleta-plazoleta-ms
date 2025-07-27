@@ -12,3 +12,9 @@ spring:
     database: MYSQL
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
+      ddl-auto: update
+
+microservices:
+  users:
+    url: http://localhost:8090
+
