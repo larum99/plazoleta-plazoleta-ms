@@ -1,6 +1,7 @@
 package com.plazoleta.plazoleta.plazoleta.domain.usecases;
 
 import com.plazoleta.plazoleta.plazoleta.domain.model.DishModel;
+import com.plazoleta.plazoleta.plazoleta.domain.model.RestaurantModel;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.in.DishServicePort;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.out.CategoryPersistencePort;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.out.DishPersistencePort;
@@ -37,6 +38,10 @@ public class DishUseCase implements DishServicePort {
 
         validateRestaurantExists(restaurantId);
         validateCategoryExists(categoryId);
+
+        validateOwnership(restaurantId, DomainConstants.MOCK_OWNER_ID);
+
+        dishModel.setActive(true);
 
         dishPersistencePort.saveDish(dishModel);
     }
@@ -84,4 +89,14 @@ public class DishUseCase implements DishServicePort {
         categoryPersistencePort.getCategoryById(categoryId)
                 .orElseThrow(CategoryNotFoundException::new);
     }
+
+    private void validateOwnership(Long restaurantId, Long ownerId) {
+        RestaurantModel restaurant = restaurantPersistencePort.getRestaurantById(restaurantId)
+                .orElseThrow(RestaurantNotFoundException::new);
+
+        if (!ownerId.equals(restaurant.getOwnerId())) {
+            throw new UnauthorizedUserException();
+        }
+    }
+
 }

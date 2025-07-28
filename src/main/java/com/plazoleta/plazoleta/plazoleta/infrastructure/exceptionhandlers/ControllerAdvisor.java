@@ -76,4 +76,10 @@ public class ControllerAdvisor {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ExceptionResponse(
                 ExceptionConstants.CATEGORY_NOT_FOUND_MESSAGE, LocalDateTime.now()));
     }
+
+    @ExceptionHandler(UnauthorizedUserException.class)
+    public ResponseEntity<ExceptionResponse> handleUnauthorizedUser(UnauthorizedUserException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ExceptionResponse(
+                ExceptionConstants.UNAUTHORIZED_USER_MESSAGE, LocalDateTime.now()));
+    }
 }

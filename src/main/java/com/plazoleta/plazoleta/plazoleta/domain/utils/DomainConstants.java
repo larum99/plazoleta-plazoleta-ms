@@ -24,4 +24,6 @@ public class DomainConstants {
     public static final String ERROR_REQUIRED_CATEGORY_ID = "El ID de la categoría es obligatorio";
 
     public static  final int MIN_PRICE = 0;
+
+    public static final Long MOCK_OWNER_ID = 1L;
 }
