@@ -2,7 +2,7 @@ package com.plazoleta.plazoleta.plazoleta.domain.usecases;
 
 import com.plazoleta.plazoleta.plazoleta.domain.exceptions.*;
 import com.plazoleta.plazoleta.plazoleta.domain.model.RestaurantModel;
-import com.plazoleta.plazoleta.plazoleta.domain.model.UserModel;
+import com.plazoleta.plazoleta.plazoleta.domain.utils.UserModel;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.in.RestaurantServicePort;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.out.RestaurantPersistencePort;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.out.UserValidationPort;

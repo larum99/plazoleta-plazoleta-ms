@@ -1,6 +1,6 @@
 package com.plazoleta.plazoleta.plazoleta.domain.ports.out;
 
-import com.plazoleta.plazoleta.plazoleta.domain.model.UserModel;
+import com.plazoleta.plazoleta.plazoleta.domain.utils.UserModel;
 
 import java.util.Optional;
 

@@ -1,4 +1,4 @@
-package com.plazoleta.plazoleta.plazoleta.domain.model;
+package com.plazoleta.plazoleta.plazoleta.domain.utils;
 
 public class UserModel {
     private Long id;

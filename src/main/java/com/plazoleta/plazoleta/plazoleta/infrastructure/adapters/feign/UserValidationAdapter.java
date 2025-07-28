@@ -1,6 +1,6 @@
 package com.plazoleta.plazoleta.plazoleta.infrastructure.adapters.feign;
 
-import com.plazoleta.plazoleta.plazoleta.domain.model.UserModel;
+import com.plazoleta.plazoleta.plazoleta.domain.utils.UserModel;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.out.UserValidationPort;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.clients.feign.UserFeignClient;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.clients.feign.dto.UserResponse;
