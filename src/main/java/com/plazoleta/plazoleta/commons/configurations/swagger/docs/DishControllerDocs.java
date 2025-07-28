@@ -1,8 +1,10 @@
 package com.plazoleta.plazoleta.commons.configurations.swagger.docs;
 
 import com.plazoleta.plazoleta.plazoleta.application.dto.request.SaveDishRequest;
+import com.plazoleta.plazoleta.plazoleta.application.dto.request.UpdateDishRequest;
 import com.plazoleta.plazoleta.plazoleta.application.dto.response.SaveDishResponse;
 import com.plazoleta.plazoleta.commons.configurations.swagger.examples.DishSwaggerExamples;
+import com.plazoleta.plazoleta.plazoleta.application.dto.response.UpdateDishResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -58,4 +60,39 @@ public class DishControllerDocs {
             )
     })
     public @interface CreateDishDocs {}
+
+    @Operation(
+            summary = "Actualizar un plato existente",
+            description = "Permite modificar el precio y la descripción de un plato, si pertenece al restaurante del propietario.",
+            requestBody = @RequestBody(
+                    description = "Datos del plato a actualizar",
+                    required = true,
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = UpdateDishRequest.class),
+                            examples = @ExampleObject(
+                                    name = "Ejemplo de actualización",
+                                    summary = "Actualización parcial de plato",
+                                    value = DishSwaggerExamples.UPDATE_DISH_REQUEST
+                            )
+                    )
+            )
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Plato actualizado exitosamente",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = UpdateDishResponse.class),
+                            examples = @ExampleObject(
+                                    name = "Respuesta exitosa",
+                                    summary = "Actualización correcta",
+                                    value = DishSwaggerExamples.DISH_UPDATED_RESPONSE
+                            )
+                    )
+            ),
+    })
+    @Target({ElementType.METHOD})
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface UpdateDishDocs {}
+
 }

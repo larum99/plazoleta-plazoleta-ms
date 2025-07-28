@@ -82,4 +82,10 @@ public class ControllerAdvisor {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ExceptionResponse(
                 ExceptionConstants.UNAUTHORIZED_USER_MESSAGE, LocalDateTime.now()));
     }
+
+    @ExceptionHandler(DishNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleDishNotFound(DishNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ExceptionResponse(
+                ExceptionConstants.DISH_NOT_FOUND_MESSAGE, LocalDateTime.now()));
+    }
 }

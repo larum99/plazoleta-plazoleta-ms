@@ -31,4 +31,20 @@ public class DishSwaggerExamples {
           "time": "2025-07-27T12:01:00"
         }
     """;
+
+    public static final String DISH_UPDATED_RESPONSE = """
+        {
+            "message": "Plato actualizado correctamente.",
+            "time": "2025-07-27T14:35:00"
+        }
+    """;
+
+    public static final String UPDATE_DISH_REQUEST = """
+        {
+            "description": "Delicioso plato colombiano con ingredientes frescos.",
+            "price": 27000
+        }
+    """;
+
+
 }

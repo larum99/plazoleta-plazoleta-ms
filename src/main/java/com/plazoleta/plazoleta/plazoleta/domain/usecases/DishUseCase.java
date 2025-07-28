@@ -46,6 +46,30 @@ public class DishUseCase implements DishServicePort {
         dishPersistencePort.saveDish(dishModel);
     }
 
+    @Override
+    public void updateDish(Long dishId, String description, BigDecimal price) {
+        if (dishId == null) throw new MissingFieldException(DomainConstants.ERROR_REQUIRED_DISH_ID);
+        if (price == null) throw new MissingFieldException(DomainConstants.ERROR_REQUIRED_DISH_PRICE);
+        if (isBlank(description)) throw new MissingFieldException(DomainConstants.ERROR_REQUIRED_DISH_DESCRIPTION);
+
+        if (price.compareTo(BigDecimal.ZERO) <= DomainConstants.MIN_PRICE) {
+            throw new InvalidPriceException();
+        }
+
+        DishModel dish = dishPersistencePort.getDishById(dishId)
+                .orElseThrow(DishNotFoundException::new);
+
+        Long restaurantId = dish.getRestaurant().getId();
+
+        validateOwnership(restaurantId, DomainConstants.MOCK_OWNER_ID);
+
+        dish.setDescription(description.trim());
+        dish.setPrice(price);
+
+        dishPersistencePort.updateDish(dish);
+    }
+
+
     private void normalizeFields(DishModel model) {
         model.setName(safeTrim(model.getName()));
         model.setDescription(safeTrim(model.getDescription()));
