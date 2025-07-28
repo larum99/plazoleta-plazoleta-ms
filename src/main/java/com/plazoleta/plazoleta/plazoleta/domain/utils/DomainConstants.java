@@ -22,6 +22,7 @@ public class DomainConstants {
     public static final String ERROR_REQUIRED_DISH_DESCRIPTION = "La descripción del plato es obligatoria";
     public static final String ERROR_REQUIRED_RESTAURANT_ID = "El ID del restaurante es obligatorio";
     public static final String ERROR_REQUIRED_CATEGORY_ID = "El ID de la categoría es obligatorio";
+    public static final String ERROR_REQUIRED_DISH_ID = "El ID del plato es obligatorio";
 
     public static  final int MIN_PRICE = 0;
 

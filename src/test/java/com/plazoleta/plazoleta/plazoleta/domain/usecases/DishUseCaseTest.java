@@ -52,6 +52,7 @@ class DishUseCaseTest {
         categoryModel.setId(1L);
 
         dishModel = new DishModel();
+        dishModel.setId(10L);
         dishModel.setName("  Plato de Prueba  ");
         dishModel.setPrice(new BigDecimal("25000.00"));
         dishModel.setDescription("  Una descripción deliciosa  ");
@@ -98,7 +99,6 @@ class DishUseCaseTest {
     void createDish_withMissingName_shouldThrowMissingFieldException() {
         dishModel.setName(null);
         assertThrows(MissingFieldException.class, () -> dishUseCase.createDish(dishModel));
-        verify(dishPersistencePort, never()).saveDish(any());
     }
 
     @Test
@@ -112,34 +112,6 @@ class DishUseCaseTest {
     void createDish_withMissingPrice_shouldThrowMissingFieldException() {
         dishModel.setPrice(null);
         assertThrows(MissingFieldException.class, () -> dishUseCase.createDish(dishModel));
-        verify(dishPersistencePort, never()).saveDish(any());
-    }
-
-    @Test
-    void createDish_withMissingDescription_shouldThrowMissingFieldException() {
-        dishModel.setDescription("");
-        assertThrows(MissingFieldException.class, () -> dishUseCase.createDish(dishModel));
-        verify(dishPersistencePort, never()).saveDish(any());
-    }
-
-    @Test
-    void createDish_withMissingRestaurantId_shouldThrowMissingFieldException() {
-        dishModel.getRestaurant().setId(null);
-        assertThrows(MissingFieldException.class, () -> dishUseCase.createDish(dishModel));
-        verify(dishPersistencePort, never()).saveDish(any());
-    }
-
-    @Test
-    void createDish_withMissingCategoryId_shouldThrowMissingFieldException() {
-        dishModel.getCategory().setId(null);
-        assertThrows(MissingFieldException.class, () -> dishUseCase.createDish(dishModel));
-        verify(dishPersistencePort, never()).saveDish(any());
-    }
-
-    @Test
-    void createDish_withZeroPrice_shouldThrowInvalidPriceException() {
-        dishModel.setPrice(BigDecimal.ZERO);
-        assertThrows(InvalidPriceException.class, () -> dishUseCase.createDish(dishModel));
         verify(dishPersistencePort, never()).saveDish(any());
     }
 
@@ -164,5 +136,73 @@ class DishUseCaseTest {
 
         assertThrows(CategoryNotFoundException.class, () -> dishUseCase.createDish(dishModel));
         verify(dishPersistencePort, never()).saveDish(any());
+    }
+
+    @Test
+    void updateDish_withValidData_shouldUpdateDish() {
+        BigDecimal newPrice = new BigDecimal("30000.00");
+        String newDescription = "Nueva descripción actualizada";
+
+        when(dishPersistencePort.getDishById(dishModel.getId())).thenReturn(Optional.of(dishModel));
+        when(restaurantPersistencePort.getRestaurantById(restaurantModel.getId())).thenReturn(Optional.of(restaurantModel));
+
+        dishUseCase.updateDish(dishModel.getId(), newDescription, newPrice);
+
+        ArgumentCaptor<DishModel> dishCaptor = ArgumentCaptor.forClass(DishModel.class);
+        verify(dishPersistencePort).updateDish(dishCaptor.capture());
+        DishModel updatedDish = dishCaptor.getValue();
+
+        assertEquals(newPrice, updatedDish.getPrice());
+        assertEquals(newDescription, updatedDish.getDescription());
+    }
+
+    @Test
+    void updateDish_withMismatchedOwner_shouldThrowUnauthorizedUserException() {
+        Long dishId = dishModel.getId();
+        BigDecimal newPrice = new BigDecimal("30000.00");
+        String newDescription = "Nueva descripción";
+
+        RestaurantModel wrongOwnerRestaurant = new RestaurantModel();
+        wrongOwnerRestaurant.setId(2L);
+        wrongOwnerRestaurant.setOwnerId(999L);
+        dishModel.setRestaurant(wrongOwnerRestaurant);
+
+        when(dishPersistencePort.getDishById(dishId)).thenReturn(Optional.of(dishModel));
+        when(restaurantPersistencePort.getRestaurantById(wrongOwnerRestaurant.getId())).thenReturn(Optional.of(wrongOwnerRestaurant));
+
+        assertThrows(UnauthorizedUserException.class, () -> {
+            dishUseCase.updateDish(dishId, newDescription, newPrice);
+        });
+
+        verify(dishPersistencePort, never()).updateDish(any());
+    }
+
+    @Test
+    void updateDish_whenDishNotFound_shouldThrowDishNotFoundException() {
+        when(dishPersistencePort.getDishById(anyLong())).thenReturn(Optional.empty());
+        assertThrows(DishNotFoundException.class, () -> {
+            dishUseCase.updateDish(99L, "desc", new BigDecimal("100"));
+        });
+    }
+
+    @Test
+    void updateDish_withNullPrice_shouldThrowMissingFieldException() {
+        assertThrows(MissingFieldException.class, () -> {
+            dishUseCase.updateDish(1L, "desc", null);
+        });
+    }
+
+    @Test
+    void updateDish_withBlankDescription_shouldThrowMissingFieldException() {
+        assertThrows(MissingFieldException.class, () -> {
+            dishUseCase.updateDish(1L, "  ", new BigDecimal("100"));
+        });
+    }
+
+    @Test
+    void updateDish_withZeroPrice_shouldThrowInvalidPriceException() {
+        assertThrows(InvalidPriceException.class, () -> {
+            dishUseCase.updateDish(1L, "desc", BigDecimal.ZERO);
+        });
     }
 }

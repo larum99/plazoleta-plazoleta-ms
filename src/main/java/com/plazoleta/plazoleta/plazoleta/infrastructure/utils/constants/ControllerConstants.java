@@ -14,4 +14,5 @@ public class ControllerConstants {
     public static final String TAG_DISH = "Platos";
     public static final String TAG_DISH_DESCRIPTION = "Operaciones relacionadas con platos";
     public static final String SAVE_DISH_PATH = "/dish";
+    public static final String UPDATE_DISH_PATH = "/dish/{id}";
 }

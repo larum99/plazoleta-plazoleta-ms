@@ -36,5 +36,9 @@ public class DishPersistenceAdapter implements DishPersistencePort {
         return Optional.empty();
     }
 
-
+    @Override
+    public void updateDish(DishModel model) {
+        DishEntity entity = dishEntityMapper.modelToEntity(model);
+        dishRepository.save(entity);
+    }
 }
