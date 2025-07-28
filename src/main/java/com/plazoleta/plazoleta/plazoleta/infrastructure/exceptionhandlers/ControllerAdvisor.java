@@ -58,4 +58,22 @@ public class ControllerAdvisor {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ExceptionResponse(
                 ExceptionConstants.USER_NOT_FOUND_MESSAGE, LocalDateTime.now()));
     }
+
+    @ExceptionHandler(InvalidPriceException.class)
+    public ResponseEntity<ExceptionResponse> handleInvalidPrice(InvalidPriceException ex) {
+        return ResponseEntity.badRequest().body(new ExceptionResponse(
+                ExceptionConstants.INVALID_PRICE_MESSAGE, LocalDateTime.now()));
+    }
+
+    @ExceptionHandler(RestaurantNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleRestaurantNotFound(RestaurantNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ExceptionResponse(
+                ExceptionConstants.RESTAURANT_NOT_FOUND_MESSAGE, LocalDateTime.now()));
+    }
+
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleCategoryNotFound(CategoryNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ExceptionResponse(
+                ExceptionConstants.CATEGORY_NOT_FOUND_MESSAGE, LocalDateTime.now()));
+    }
 }

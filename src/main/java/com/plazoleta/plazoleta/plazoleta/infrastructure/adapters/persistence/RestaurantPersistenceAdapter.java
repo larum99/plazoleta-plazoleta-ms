@@ -36,4 +36,10 @@ public class RestaurantPersistenceAdapter implements RestaurantPersistencePort {
         Optional<RestaurantEntity> entity = restaurantRepository.findByName(name);
         return restaurantEntityMapper.optionalEntityToModel(entity);
     }
+
+    @Override
+    public Optional<RestaurantModel> getRestaurantById(Long id) {
+        return restaurantRepository.findById(id)
+                .map(restaurantEntityMapper::entityToModel);
+    }
 }

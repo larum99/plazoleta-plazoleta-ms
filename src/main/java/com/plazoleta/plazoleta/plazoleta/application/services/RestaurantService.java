@@ -1,4 +1,4 @@
-package com.plazoleta.plazoleta.plazoleta.application.service;
+package com.plazoleta.plazoleta.plazoleta.application.services;
 
 import com.plazoleta.plazoleta.plazoleta.application.dto.request.SaveRestaurantRequest;
 import com.plazoleta.plazoleta.plazoleta.application.dto.response.SaveRestaurantResponse;

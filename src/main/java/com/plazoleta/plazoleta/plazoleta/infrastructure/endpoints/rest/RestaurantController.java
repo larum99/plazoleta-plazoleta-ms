@@ -3,7 +3,7 @@ package com.plazoleta.plazoleta.plazoleta.infrastructure.endpoints.rest;
 import com.plazoleta.plazoleta.commons.configurations.swagger.docs.RestaurantControllerDocs.CreateRestaurantDocs;
 import com.plazoleta.plazoleta.plazoleta.application.dto.request.SaveRestaurantRequest;
 import com.plazoleta.plazoleta.plazoleta.application.dto.response.SaveRestaurantResponse;
-import com.plazoleta.plazoleta.plazoleta.application.service.RestaurantService;
+import com.plazoleta.plazoleta.plazoleta.application.services.RestaurantService;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.utils.constants.ControllerConstants;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class RestaurantController {
     private final RestaurantService restaurantService;
 
     @CreateRestaurantDocs
-    @PostMapping(ControllerConstants.SAVE_PATH)
+    @PostMapping(ControllerConstants.SAVE_PATH_RESTAURANT)
     public ResponseEntity<SaveRestaurantResponse> saveRestaurant(@RequestBody SaveRestaurantRequest request) {
         SaveRestaurantResponse response = restaurantService.save(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);

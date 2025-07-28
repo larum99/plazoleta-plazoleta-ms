@@ -1,10 +1,10 @@
-package com.plazoleta.plazoleta.plazoleta.application.service.impl;
+package com.plazoleta.plazoleta.plazoleta.application.services.impl;
 
 import com.plazoleta.plazoleta.commons.configurations.utils.Constants;
 import com.plazoleta.plazoleta.plazoleta.application.dto.request.SaveRestaurantRequest;
 import com.plazoleta.plazoleta.plazoleta.application.dto.response.SaveRestaurantResponse;
 import com.plazoleta.plazoleta.plazoleta.application.mappers.RestaurantDtoMapper;
-import com.plazoleta.plazoleta.plazoleta.application.service.RestaurantService;
+import com.plazoleta.plazoleta.plazoleta.application.services.RestaurantService;
 import com.plazoleta.plazoleta.plazoleta.domain.model.RestaurantModel;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.in.RestaurantServicePort;
 import lombok.RequiredArgsConstructor;
