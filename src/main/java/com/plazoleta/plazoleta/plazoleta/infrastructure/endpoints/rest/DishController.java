@@ -24,7 +24,7 @@ public class DishController {
     @CreateDishDocs
     @PostMapping(ControllerConstants.SAVE_DISH_PATH)
     public ResponseEntity<SaveDishResponse> saveDish(@RequestBody SaveDishRequest request) {
-        SaveDishResponse response = dishService.save(request);
+        SaveDishResponse response = dishService.saveDish(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 

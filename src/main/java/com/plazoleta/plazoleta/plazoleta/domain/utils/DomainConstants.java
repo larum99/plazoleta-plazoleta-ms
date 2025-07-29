@@ -1,5 +1,7 @@
 package com.plazoleta.plazoleta.plazoleta.domain.utils;
 
+import java.math.BigDecimal;
+
 public class DomainConstants {
 
     private DomainConstants() {
@@ -24,7 +26,7 @@ public class DomainConstants {
     public static final String ERROR_REQUIRED_CATEGORY_ID = "El ID de la categoría es obligatorio";
     public static final String ERROR_REQUIRED_DISH_ID = "El ID del plato es obligatorio";
 
-    public static  final int MIN_PRICE = 0;
+    public static final BigDecimal MINIMUM_ALLOWED_DISH_PRICE = new BigDecimal("0.00");
 
     public static final Long MOCK_OWNER_ID = 1L;
 }

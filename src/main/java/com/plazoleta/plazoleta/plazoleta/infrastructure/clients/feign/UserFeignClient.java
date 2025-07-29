@@ -14,5 +14,4 @@ public interface UserFeignClient {
     UserResponse getUserByEmail(@RequestParam(FeignConstants.EMAIL_PARAM) String email);
     @GetMapping(FeignConstants.GET_BY_ID_PATH)
     UserResponse getUserById(@PathVariable(FeignConstants.ID_PATH_VARIABLE) Long id);
-
 }

@@ -22,7 +22,7 @@ public class DishServiceImpl implements DishService {
     private final DishDtoMapper dishDtoMapper;
 
     @Override
-    public SaveDishResponse save(SaveDishRequest request) {
+    public SaveDishResponse saveDish(SaveDishRequest request) {
         DishModel model = dishDtoMapper.requestToModel(request);
         dishServicePort.createDish(model);
         return new SaveDishResponse(Constants.SAVE_DISH_RESPONSE_MESSAGE, LocalDateTime.now());

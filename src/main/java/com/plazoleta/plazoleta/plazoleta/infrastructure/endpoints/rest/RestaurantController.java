@@ -22,7 +22,7 @@ public class RestaurantController {
     @CreateRestaurantDocs
     @PostMapping(ControllerConstants.SAVE_PATH_RESTAURANT)
     public ResponseEntity<SaveRestaurantResponse> saveRestaurant(@RequestBody SaveRestaurantRequest request) {
-        SaveRestaurantResponse response = restaurantService.save(request);
+        SaveRestaurantResponse response = restaurantService.saveRestaurant(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 }

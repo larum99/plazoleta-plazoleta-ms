@@ -10,7 +10,7 @@ spring:
     password: ${DB_PASSWORD}
   jpa:
     database: MYSQL
-    database-platform: org.hibernate.dialect.MySQL8Dialect
+    database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
       ddl-auto: update
 

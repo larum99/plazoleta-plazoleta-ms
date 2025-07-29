@@ -13,45 +13,51 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 import java.lang.annotation.*;
 
+import static com.plazoleta.plazoleta.commons.configurations.swagger.docs.SwaggerConstants.*;
+
 public class RestaurantControllerDocs {
 
     @Target({ElementType.METHOD})
     @Retention(RetentionPolicy.RUNTIME)
     @Operation(
-            summary = "Crear un nuevo restaurante",
-            description = "Permite registrar un nuevo restaurante en la plataforma.",
+            summary = SUMMARY_CREATE_RESTAURANT,
+            description = DESCRIPTION_CREATE_RESTAURANT,
             requestBody = @RequestBody(
-                    description = "Datos del restaurante a crear",
+                    description = DESCRIPTION_CREATE_RESTAURANT,
                     required = true,
                     content = @Content(
-                            mediaType = "application/json",
+                            mediaType = APPLICATION_JSON,
                             schema = @Schema(implementation = SaveRestaurantRequest.class),
                             examples = @ExampleObject(
-                                    name = "Ejemplo de creación",
-                                    summary = "Restaurante nuevo",
+                                    name = EXAMPLE_NAME_CREATE_REQUEST,
+                                    summary = SUMMARY_CREATE_RESTAURANT_EXAMPLE,
                                     value = RestaurantSwaggerExamples.CREATE_RESTAURANT_REQUEST
                             )
                     )
             )
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Restaurante creado exitosamente",
+            @ApiResponse(
+                    responseCode = CREATED,
+                    description = DESCRIPTION_CREATE_RESTAURANT_SUCCESS,
                     content = @Content(
-                            mediaType = "application/json",
+                            mediaType = APPLICATION_JSON,
                             schema = @Schema(implementation = SaveRestaurantResponse.class),
                             examples = @ExampleObject(
-                                    name = "Respuesta exitosa",
-                                    summary = "Restaurante creado",
+                                    name = EXAMPLE_NAME_SUCCESS,
+                                    summary = SUMMARY_RESTAURANT_CREATED,
                                     value = RestaurantSwaggerExamples.RESTAURANT_CREATED_RESPONSE
                             )
                     )
             ),
-            @ApiResponse(responseCode = "400", description = "Datos inválidos o restaurante ya existente",
+            @ApiResponse(
+                    responseCode = BAD_REQUEST,
+                    description = DESCRIPTION_RESTAURANT_ALREADY_EXISTS,
                     content = @Content(
-                            mediaType = "application/json",
+                            mediaType = APPLICATION_JSON,
                             examples = @ExampleObject(
-                                    name = "Error",
-                                    summary = "Restaurante duplicado",
+                                    name = EXAMPLE_NAME_VALIDATION_ERROR,
+                                    summary = SUMMARY_RESTAURANT_DUPLICATE,
                                     value = RestaurantSwaggerExamples.RESTAURANT_ALREADY_EXISTS_RESPONSE
                             )
                     )

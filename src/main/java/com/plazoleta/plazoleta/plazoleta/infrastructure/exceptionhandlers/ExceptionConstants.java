@@ -14,7 +14,7 @@ public class ExceptionConstants {
     public static final String INVALID_OWNER_MESSAGE = "El ID del propietario no corresponde a un usuario con rol PROPIETARIO.";
     public static final String USER_NOT_FOUND_MESSAGE = "El usuario con el ID proporcionado no fue encontrado.";
 
-    public static final String INVALID_PRICE_MESSAGE = "El precio del plato debe ser igual o mayor a 0.";
+    public static final String INVALID_PRICE_MESSAGE = "El precio del plato debe ser mayor a 0.";
     public static final String RESTAURANT_NOT_FOUND_MESSAGE = "El restaurante con el ID proporcionado no fue encontrado.";
     public static final String CATEGORY_NOT_FOUND_MESSAGE = "La categoría con el ID proporcionado no fue encontrada.";
     public static final String UNAUTHORIZED_USER_MESSAGE = "Solo el propietario del restaurante puede realizar esta acción.";

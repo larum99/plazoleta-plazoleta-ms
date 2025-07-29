@@ -6,6 +6,6 @@ import com.plazoleta.plazoleta.plazoleta.application.dto.response.SaveDishRespon
 import com.plazoleta.plazoleta.plazoleta.application.dto.response.UpdateDishResponse;
 
 public interface DishService {
-    SaveDishResponse save(SaveDishRequest request);
+    SaveDishResponse saveDish(SaveDishRequest request);
     UpdateDishResponse updateDish(Long dishId, UpdateDishRequest request);
 }
