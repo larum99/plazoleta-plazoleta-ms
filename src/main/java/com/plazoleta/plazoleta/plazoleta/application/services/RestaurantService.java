@@ -4,5 +4,6 @@ import com.plazoleta.plazoleta.plazoleta.application.dto.request.SaveRestaurantR
 import com.plazoleta.plazoleta.plazoleta.application.dto.response.SaveRestaurantResponse;
 
 public interface RestaurantService {
-    SaveRestaurantResponse saveRestaurant(SaveRestaurantRequest request);
+    SaveRestaurantResponse saveRestaurant(SaveRestaurantRequest request, String token);
+
 }

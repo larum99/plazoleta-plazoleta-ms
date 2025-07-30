@@ -1,6 +1,7 @@
 package com.plazoleta.plazoleta.plazoleta.domain.usecases;
 
 import com.plazoleta.plazoleta.plazoleta.domain.exceptions.DuplicateNitException;
+import com.plazoleta.plazoleta.plazoleta.domain.exceptions.ForbiddenException;
 import com.plazoleta.plazoleta.plazoleta.domain.model.RestaurantModel;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.out.RestaurantPersistencePort;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.out.UserValidationPort;
@@ -30,6 +31,8 @@ class RestaurantUseCaseTest {
     private RestaurantUseCase restaurantUseCase;
 
     private RestaurantModel restaurantModel;
+    private final String ADMIN_ROLE = "ADMINISTRADOR";
+    private final String NON_ADMIN_ROLE = "PROPIETARIO";
 
     @BeforeEach
     void setUp() {
@@ -43,22 +46,32 @@ class RestaurantUseCaseTest {
     }
 
     @Test
-    void createRestaurant_withValidData_shouldSaveRestaurant() {
+    void createRestaurant_withValidDataAndAdminRole_shouldSaveRestaurant() {
         UserModel ownerUser = new UserModel(1L, "PROPIETARIO");
         when(restaurantPersistencePort.getRestaurantByNit(anyString())).thenReturn(null);
         when(userValidationPort.getUserById(1L)).thenReturn(Optional.of(ownerUser));
 
-        restaurantUseCase.createRestaurant(restaurantModel);
+        restaurantUseCase.createRestaurant(restaurantModel, ADMIN_ROLE);
 
         verify(restaurantPersistencePort, times(1)).saveRestaurant(any(RestaurantModel.class));
     }
 
     @Test
     void createRestaurant_whenHelperThrowsException_shouldNotSaveRestaurant() {
+
         when(restaurantPersistencePort.getRestaurantByNit("123456789")).thenReturn(new RestaurantModel());
 
-        assertThrows(DuplicateNitException.class, () -> restaurantUseCase.createRestaurant(restaurantModel));
+        assertThrows(DuplicateNitException.class, () -> restaurantUseCase.createRestaurant(restaurantModel, ADMIN_ROLE));
 
         verify(restaurantPersistencePort, never()).saveRestaurant(any());
+    }
+
+    @Test
+    void createRestaurant_withNonAdminRole_shouldThrowForbiddenException() {
+
+        assertThrows(ForbiddenException.class, () -> restaurantUseCase.createRestaurant(restaurantModel, NON_ADMIN_ROLE));
+
+        verify(restaurantPersistencePort, never()).saveRestaurant(any());
+        verify(userValidationPort, never()).getUserById(any());
     }
 }

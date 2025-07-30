@@ -7,8 +7,10 @@ import com.plazoleta.plazoleta.plazoleta.application.services.RestaurantService;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.utils.constants.ControllerConstants;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,8 +23,13 @@ public class RestaurantController {
 
     @CreateRestaurantDocs
     @PostMapping(ControllerConstants.SAVE_PATH_RESTAURANT)
-    public ResponseEntity<SaveRestaurantResponse> saveRestaurant(@RequestBody SaveRestaurantRequest request) {
-        SaveRestaurantResponse response = restaurantService.saveRestaurant(request);
+    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    public ResponseEntity<SaveRestaurantResponse> saveRestaurant(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
+            @RequestBody SaveRestaurantRequest request) {
+
+        String token = authorizationHeader.replace("Bearer ", "");
+        SaveRestaurantResponse response = restaurantService.saveRestaurant(request, token);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 }

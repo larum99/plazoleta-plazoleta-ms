@@ -1,4 +1,4 @@
-package com.plazoleta.plazoleta.plazoleta.infrastructure.clients.feign.interceptors;
+package com.plazoleta.plazoleta.plazoleta.infrastructure.adapters.feign.interceptors;
 
 import feign.RequestInterceptor;
 import feign.RequestTemplate;

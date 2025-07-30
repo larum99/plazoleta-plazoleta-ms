@@ -4,7 +4,6 @@ import com.plazoleta.plazoleta.plazoleta.domain.exceptions.*;
 import com.plazoleta.plazoleta.plazoleta.domain.model.RestaurantModel;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.out.RestaurantPersistencePort;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.out.UserValidationPort;
-import com.plazoleta.plazoleta.plazoleta.domain.utils.DomainConstants;
 import com.plazoleta.plazoleta.plazoleta.domain.utils.UserModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,6 +28,8 @@ class RestaurantHelperTest {
     private RestaurantHelper restaurantHelper;
 
     private RestaurantModel restaurant;
+    private final String ADMIN_ROLE = "ADMINISTRADOR";
+    private final String OWNER_ROLE = "PROPIETARIO";
 
     @BeforeEach
     void setUp() {
@@ -86,7 +87,7 @@ class RestaurantHelperTest {
 
     @Test
     void validateOwnerExistsAndHasRole_withValidOwner_shouldNotThrowException() {
-        UserModel owner = new UserModel(1L, "PROPIETARIO");
+        UserModel owner = new UserModel(1L, OWNER_ROLE);
         when(userValidationPort.getUserById(1L)).thenReturn(Optional.of(owner));
 
         assertDoesNotThrow(() -> restaurantHelper.validateOwnerExistsAndHasRole(1L));
@@ -105,5 +106,21 @@ class RestaurantHelperTest {
         when(userValidationPort.getUserById(1L)).thenReturn(Optional.of(clientUser));
 
         assertThrows(InvalidOwnerException.class, () -> restaurantHelper.validateOwnerExistsAndHasRole(1L));
+    }
+
+    @Test
+    void validateRole_withAdminRole_shouldNotThrowException() {
+        // Assuming DomainConstants.ROLE_ADMIN is "ADMINISTRADOR"
+        assertDoesNotThrow(() -> restaurantHelper.validateRole(ADMIN_ROLE));
+    }
+
+    @Test
+    void validateRole_withNonAdminRole_shouldThrowForbiddenException() {
+        assertThrows(ForbiddenException.class, () -> restaurantHelper.validateRole(OWNER_ROLE));
+    }
+
+    @Test
+    void validateRole_withNullRole_shouldThrowForbiddenException() {
+        assertThrows(ForbiddenException.class, () -> restaurantHelper.validateRole(null));
     }
 }

@@ -79,8 +79,15 @@ public class RestaurantHelper {
         UserModel user = userValidationPort.getUserById(ownerId)
                 .orElseThrow(UserNotFoundException::new);
 
-        if (!DomainConstants.OWNER.equalsIgnoreCase(user.getRole())) {
+        if (!DomainConstants.ROLE_OWNER.equalsIgnoreCase(user.getRole())) {
             throw new InvalidOwnerException();
         }
     }
+
+    public void validateRole(String role) {
+        if (!DomainConstants.ROLE_ADMIN.equals(role)) {
+            throw new ForbiddenException();
+        }
+    }
+
 }

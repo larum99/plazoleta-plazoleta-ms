@@ -19,4 +19,5 @@ public class ExceptionConstants {
     public static final String CATEGORY_NOT_FOUND_MESSAGE = "La categoría con el ID proporcionado no fue encontrada.";
     public static final String UNAUTHORIZED_USER_MESSAGE = "Solo el propietario del restaurante puede realizar esta acción.";
     public static final String DISH_NOT_FOUND_MESSAGE = "El plato con el ID proporcionado no fue encontrado.";
+    public static final String FORBIDDEN_OPERATION_MESSAGE = "No tienes permisos para realizar esta operación.";
 }

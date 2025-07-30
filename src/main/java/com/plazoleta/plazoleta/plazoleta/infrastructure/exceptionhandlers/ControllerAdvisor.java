@@ -88,4 +88,11 @@ public class ControllerAdvisor {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ExceptionResponse(
                 ExceptionConstants.DISH_NOT_FOUND_MESSAGE, LocalDateTime.now()));
     }
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<ExceptionResponse> handleForbiddenException(ForbiddenException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ExceptionResponse(
+                ExceptionConstants.FORBIDDEN_OPERATION_MESSAGE, LocalDateTime.now()));
+    }
+
 }

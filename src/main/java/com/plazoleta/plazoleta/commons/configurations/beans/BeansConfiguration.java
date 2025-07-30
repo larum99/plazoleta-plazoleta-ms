@@ -1,6 +1,7 @@
 package com.plazoleta.plazoleta.commons.configurations.beans;
 
 import com.plazoleta.plazoleta.plazoleta.domain.ports.in.DishServicePort;
+import com.plazoleta.plazoleta.plazoleta.domain.ports.in.RoleValidatorPort;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.out.CategoryPersistencePort;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.out.DishPersistencePort;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.out.RestaurantPersistencePort;
@@ -11,6 +12,7 @@ import com.plazoleta.plazoleta.plazoleta.infrastructure.adapters.feign.UserValid
 import com.plazoleta.plazoleta.plazoleta.infrastructure.adapters.persistence.CategoryPersistenceAdapter;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.adapters.persistence.DishPersistenceAdapter;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.adapters.persistence.RestaurantPersistenceAdapter;
+import com.plazoleta.plazoleta.plazoleta.infrastructure.adapters.security.RoleValidatorAdapter;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.clients.feign.UserFeignClient;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.mappers.CategoryEntityMapper;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.mappers.DishEntityMapper;
@@ -18,6 +20,7 @@ import com.plazoleta.plazoleta.plazoleta.infrastructure.mappers.RestaurantEntity
 import com.plazoleta.plazoleta.plazoleta.infrastructure.repositories.mysql.CategoryRepository;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.repositories.mysql.DishRepository;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.repositories.mysql.RestaurantRepository;
+import com.plazoleta.plazoleta.plazoleta.infrastructure.security.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -80,5 +83,10 @@ public class BeansConfiguration {
     @Bean
     public UserValidationPort userValidationPort() {
         return new UserValidationAdapter(userFeignClient);
+    }
+
+    @Bean
+    public RoleValidatorPort roleValidatorPort(JwtUtil jwtUtil) {
+        return new RoleValidatorAdapter(jwtUtil);
     }
 }

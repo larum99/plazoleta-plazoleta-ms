@@ -17,7 +17,7 @@ public class DomainConstants {
     public static final String ERROR_REQUIRED_LOGO_URL = "La URL del logo es obligatoria";
     public static final String ERROR_REQUIRED_OWNER_ID = "El ID del propietario es obligatorio";
 
-    public static final String OWNER = "PROPIETARIO";
+    public static final String ROLE_OWNER = "PROPIETARIO";
 
     public static final String ERROR_REQUIRED_DISH_NAME = "El nombre del plato es obligatorio";
     public static final String ERROR_REQUIRED_DISH_PRICE = "El precio del plato es obligatorio";
@@ -26,7 +26,5 @@ public class DomainConstants {
     public static final String ERROR_REQUIRED_CATEGORY_ID = "El ID de la categoría es obligatorio";
     public static final String ERROR_REQUIRED_DISH_ID = "El ID del plato es obligatorio";
 
-    public static final BigDecimal MINIMUM_ALLOWED_DISH_PRICE = new BigDecimal("0.00");
-
-    public static final Long MOCK_OWNER_ID = 1L;
+    public static final String ROLE_ADMIN = "ADMINISTRADOR";
 }

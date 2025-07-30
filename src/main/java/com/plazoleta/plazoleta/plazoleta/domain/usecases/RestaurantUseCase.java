@@ -20,7 +20,8 @@ public class RestaurantUseCase implements RestaurantServicePort {
     }
 
     @Override
-    public void createRestaurant(RestaurantModel restaurantModel) {
+    public void createRestaurant(RestaurantModel restaurantModel, String role) {
+        helper.validateRole(role);
         helper.normalizeFields(restaurantModel);
         helper.validateMandatoryFields(restaurantModel);
         helper.validateNit(restaurantModel.getNit());
