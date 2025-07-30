@@ -15,4 +15,8 @@ public class ControllerConstants {
     public static final String TAG_DISH_DESCRIPTION = "Operaciones relacionadas con platos";
     public static final String SAVE_DISH_PATH = "/dish";
     public static final String UPDATE_DISH_PATH = "/dish/{id}";
+
+    public static final String ROLE_PROPIETARIO = "hasRole('PROPIETARIO')";
+    public static final String ROLE_ADMINISTRADOR = "hasRole('ADMINISTRADOR')";
+    public static final String BEARER_PREFIX = "Bearer ";
 }

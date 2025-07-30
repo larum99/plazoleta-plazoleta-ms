@@ -25,25 +25,25 @@ public class DishController {
 
     @CreateDishDocs
     @PostMapping(ControllerConstants.SAVE_DISH_PATH)
-    @PreAuthorize("hasRole('PROPIETARIO')")
+    @PreAuthorize(ControllerConstants.ROLE_PROPIETARIO)
     public ResponseEntity<SaveDishResponse> saveDish(
             @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
             @RequestBody SaveDishRequest request
     ) {
-        String token = authorizationHeader.replace("Bearer ", "");
+        String token = authorizationHeader.replace(ControllerConstants.BEARER_PREFIX, "");
         SaveDishResponse response = dishService.saveDish(request, token);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @UpdateDishDocs
     @PutMapping(ControllerConstants.UPDATE_DISH_PATH)
-    @PreAuthorize("hasRole('PROPIETARIO')")
+    @PreAuthorize(ControllerConstants.ROLE_PROPIETARIO)
     public ResponseEntity<UpdateDishResponse> updateDish(
             @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
             @PathVariable Long id,
             @RequestBody UpdateDishRequest request
     ) {
-        String token = authorizationHeader.replace("Bearer ", "");
+        String token = authorizationHeader.replace(ControllerConstants.BEARER_PREFIX, "");
         UpdateDishResponse response = dishService.updateDish(id, request, token);
         return ResponseEntity.ok(response);
     }

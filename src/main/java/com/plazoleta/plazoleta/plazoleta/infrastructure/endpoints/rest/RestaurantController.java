@@ -23,12 +23,12 @@ public class RestaurantController {
 
     @CreateRestaurantDocs
     @PostMapping(ControllerConstants.SAVE_PATH_RESTAURANT)
-    @PreAuthorize("hasRole('ADMINISTRADOR')")
+    @PreAuthorize(ControllerConstants.ROLE_ADMINISTRADOR)
     public ResponseEntity<SaveRestaurantResponse> saveRestaurant(
             @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
             @RequestBody SaveRestaurantRequest request) {
 
-        String token = authorizationHeader.replace("Bearer ", "");
+        String token = authorizationHeader.replace(ControllerConstants.BEARER_PREFIX, "");
         SaveRestaurantResponse response = restaurantService.saveRestaurant(request, token);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
