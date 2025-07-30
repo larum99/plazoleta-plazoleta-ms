@@ -1,6 +1,7 @@
 package com.plazoleta.plazoleta.plazoleta.infrastructure.security.config;
 
 import com.plazoleta.plazoleta.plazoleta.infrastructure.security.filters.JwtAuthenticationFilter;
+import com.plazoleta.plazoleta.plazoleta.infrastructure.security.handlers.CustomAccessDeniedHandler;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.security.utils.JwtUtil;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.security.utils.SecurityConstants;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtUtil jwtUtil;
+    private final CustomAccessDeniedHandler accessDeniedHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -31,6 +33,9 @@ public class SecurityConfig {
                         .requestMatchers(SecurityConstants.RESTAURANT_PROTECTED_PATH).authenticated()
                         .requestMatchers(SecurityConstants.DISH_PROTECTED_PATH).authenticated()
                         .anyRequest().authenticated()
+                )
+                .exceptionHandling(ex -> ex
+                        .accessDeniedHandler(accessDeniedHandler)
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
                 .build();
