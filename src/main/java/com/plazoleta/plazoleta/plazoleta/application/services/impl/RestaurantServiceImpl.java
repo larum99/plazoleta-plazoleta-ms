@@ -28,5 +28,4 @@ public class RestaurantServiceImpl implements RestaurantService {
         restaurantServicePort.createRestaurant(model, role);
         return new SaveRestaurantResponse(Constants.SAVE_RESTAURANT_RESPONSE_MESSAGE, LocalDateTime.now());
     }
-
 }

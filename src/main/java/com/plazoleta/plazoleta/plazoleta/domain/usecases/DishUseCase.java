@@ -50,4 +50,12 @@ public class DishUseCase implements DishServicePort {
 
         dishPersistencePort.updateDish(dish);
     }
+
+    @Override
+    public void changeDishStatus(Long dishId, Long ownerId, Boolean newStatus) {
+        DishModel dish = helper.getValidatedDishForStatusChange(dishId, ownerId);
+        dish.setActive(newStatus);
+        dishPersistencePort.updateDish(dish);
+    }
+
 }

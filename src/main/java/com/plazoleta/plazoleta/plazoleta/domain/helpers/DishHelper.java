@@ -103,4 +103,13 @@ public class DishHelper {
     private boolean isBlank(String value) {
         return value == null || value.trim().isEmpty();
     }
+
+    public DishModel getValidatedDishForStatusChange(Long dishId, Long ownerId) {
+        DishModel dish = dishPersistencePort.getDishById(dishId)
+                .orElseThrow(DishNotFoundException::new);
+
+        validateOwnership(dish.getRestaurant().getId(), ownerId);
+        return dish;
+    }
+
 }

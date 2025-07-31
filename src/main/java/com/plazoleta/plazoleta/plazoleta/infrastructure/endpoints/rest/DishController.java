@@ -5,6 +5,7 @@ import com.plazoleta.plazoleta.plazoleta.application.dto.request.SaveDishRequest
 import com.plazoleta.plazoleta.plazoleta.application.dto.request.UpdateDishRequest;
 import com.plazoleta.plazoleta.plazoleta.application.dto.response.SaveDishResponse;
 import com.plazoleta.plazoleta.plazoleta.application.dto.response.UpdateDishResponse;
+import com.plazoleta.plazoleta.plazoleta.application.dto.response.UpdateDishStatusResponse;
 import com.plazoleta.plazoleta.plazoleta.application.services.DishService;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.utils.constants.ControllerConstants;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -47,4 +48,18 @@ public class DishController {
         UpdateDishResponse response = dishService.updateDish(id, request, token);
         return ResponseEntity.ok(response);
     }
+
+    @UpdateDishStatusDocs
+    @PutMapping(ControllerConstants.UPDATE_STATUS_DISH_PATH)
+    @PreAuthorize(ControllerConstants.ROLE_PROPIETARIO)
+    public ResponseEntity<UpdateDishStatusResponse> updateStatusDish(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
+            @PathVariable Long id,
+            @RequestParam Boolean newStatus
+    ) {
+        String token = authorizationHeader.replace(ControllerConstants.BEARER_PREFIX, "");
+        UpdateDishStatusResponse response = dishService.updateStatusDish(id, newStatus, token);
+        return ResponseEntity.ok(response);
+    }
+
 }

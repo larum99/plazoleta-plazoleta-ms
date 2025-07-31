@@ -5,6 +5,7 @@ import com.plazoleta.plazoleta.plazoleta.application.dto.request.SaveDishRequest
 import com.plazoleta.plazoleta.plazoleta.application.dto.request.UpdateDishRequest;
 import com.plazoleta.plazoleta.plazoleta.application.dto.response.SaveDishResponse;
 import com.plazoleta.plazoleta.plazoleta.application.dto.response.UpdateDishResponse;
+import com.plazoleta.plazoleta.plazoleta.application.dto.response.UpdateDishStatusResponse;
 import com.plazoleta.plazoleta.plazoleta.application.mappers.DishDtoMapper;
 import com.plazoleta.plazoleta.plazoleta.application.services.DishService;
 import com.plazoleta.plazoleta.plazoleta.domain.model.DishModel;
@@ -37,5 +38,12 @@ public class DishServiceImpl implements DishService {
         Long ownerId = roleValidatorPort.extractUserId(token);
         dishServicePort.updateDish(dishId, request.description(), request.price(), ownerId);
         return new UpdateDishResponse(Constants.UPDATE_DISH_SUCCESS_MESSAGE, LocalDateTime.now());
+    }
+
+    @Override
+    public UpdateDishStatusResponse updateStatusDish(Long dishId, Boolean newStatus, String token) {
+        Long ownerId = roleValidatorPort.extractUserId(token);
+        dishServicePort.changeDishStatus(dishId, ownerId, newStatus);
+        return new UpdateDishStatusResponse(Constants.UPDATE_DISH_STATUS_SUCCESS_MESSAGE, LocalDateTime.now());
     }
 }

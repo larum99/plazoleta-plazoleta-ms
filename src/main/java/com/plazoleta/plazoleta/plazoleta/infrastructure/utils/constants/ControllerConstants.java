@@ -19,4 +19,6 @@ public class ControllerConstants {
     public static final String ROLE_PROPIETARIO = "hasRole('PROPIETARIO')";
     public static final String ROLE_ADMINISTRADOR = "hasRole('ADMINISTRADOR')";
     public static final String BEARER_PREFIX = "Bearer ";
+
+    public static final String UPDATE_STATUS_DISH_PATH = "/dishes/{id}/status";
 }

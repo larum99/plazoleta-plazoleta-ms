@@ -65,6 +65,7 @@ class DishUseCaseTest {
         dishModel.setImageUrl("https://example.com/image.png");
         dishModel.setRestaurant(restaurantModel);
         dishModel.setCategory(categoryModel);
+        dishModel.setActive(true);
     }
 
     @Test
@@ -84,9 +85,7 @@ class DishUseCaseTest {
 
     @Test
     void createDish_withNonOwnerRole_shouldThrowUnauthorizedUserException() {
-        assertThrows(UnauthorizedUserException.class, () -> {
-            dishUseCase.createDish(dishModel, NON_OWNER_ROLE, MOCK_OWNER_ID);
-        });
+        assertThrows(UnauthorizedUserException.class, () -> dishUseCase.createDish(dishModel, NON_OWNER_ROLE, MOCK_OWNER_ID));
 
         verify(dishPersistencePort, never()).saveDish(any());
     }
@@ -115,9 +114,7 @@ class DishUseCaseTest {
         when(dishPersistencePort.getDishById(MOCK_DISH_ID)).thenReturn(Optional.of(dishModel));
         when(restaurantPersistencePort.getRestaurantById(MOCK_RESTAURANT_ID)).thenReturn(Optional.of(restaurantModel));
 
-        assertThrows(UnauthorizedUserException.class, () -> {
-            dishUseCase.updateDish(MOCK_DISH_ID, "desc", new BigDecimal("100"), wrongOwnerId);
-        });
+        assertThrows(UnauthorizedUserException.class, () -> dishUseCase.updateDish(MOCK_DISH_ID, "desc", new BigDecimal("100"), wrongOwnerId));
 
         verify(dishPersistencePort, never()).updateDish(any());
     }
@@ -126,10 +123,43 @@ class DishUseCaseTest {
     void updateDish_whenDishNotFound_shouldThrowDishNotFoundException() {
         when(dishPersistencePort.getDishById(anyLong())).thenReturn(Optional.empty());
 
-        assertThrows(DishNotFoundException.class, () -> {
-            dishUseCase.updateDish(99L, "desc", new BigDecimal("100"), MOCK_OWNER_ID);
-        });
+        assertThrows(DishNotFoundException.class, () -> dishUseCase.updateDish(99L, "desc", new BigDecimal("100"), MOCK_OWNER_ID));
 
         verify(dishPersistencePort, never()).updateDish(any());
+    }
+
+    @Test
+    void changeDishStatus_withValidData_shouldUpdateStatus() {
+        when(dishPersistencePort.getDishById(MOCK_DISH_ID)).thenReturn(Optional.of(dishModel));
+        when(restaurantPersistencePort.getRestaurantById(MOCK_RESTAURANT_ID)).thenReturn(Optional.of(restaurantModel));
+
+        dishUseCase.changeDishStatus(MOCK_DISH_ID, MOCK_OWNER_ID, false);
+
+        ArgumentCaptor<DishModel> dishCaptor = ArgumentCaptor.forClass(DishModel.class);
+        verify(dishPersistencePort).updateDish(dishCaptor.capture());
+        DishModel updatedDish = dishCaptor.getValue();
+
+        assertFalse(updatedDish.getActive());
+        assertEquals(MOCK_DISH_ID, updatedDish.getId());
+    }
+
+    @Test
+    void changeDishStatus_whenDishNotFound_shouldThrowDishNotFoundException() {
+        when(dishPersistencePort.getDishById(MOCK_DISH_ID)).thenReturn(Optional.empty());
+
+        assertThrows(DishNotFoundException.class, () -> dishUseCase.changeDishStatus(MOCK_DISH_ID, MOCK_OWNER_ID, false));
+
+        verify(dishPersistencePort, never()).updateDish(any(DishModel.class));
+    }
+
+    @Test
+    void changeDishStatus_withMismatchedOwner_shouldThrowUnauthorizedUserException() {
+        Long wrongOwnerId = 999L;
+        when(dishPersistencePort.getDishById(MOCK_DISH_ID)).thenReturn(Optional.of(dishModel));
+        when(restaurantPersistencePort.getRestaurantById(MOCK_RESTAURANT_ID)).thenReturn(Optional.of(restaurantModel));
+
+        assertThrows(UnauthorizedUserException.class, () -> dishUseCase.changeDishStatus(MOCK_DISH_ID, wrongOwnerId, false));
+
+        verify(dishPersistencePort, never()).updateDish(any(DishModel.class));
     }
 }
