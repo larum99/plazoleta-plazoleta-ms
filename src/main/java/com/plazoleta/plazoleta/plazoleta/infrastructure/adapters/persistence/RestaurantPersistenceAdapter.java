@@ -6,6 +6,7 @@ import com.plazoleta.plazoleta.plazoleta.domain.utils.PageResult;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.entities.RestaurantEntity;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.mappers.RestaurantEntityMapper;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.repositories.mysql.RestaurantRepository;
+import com.plazoleta.plazoleta.plazoleta.infrastructure.utils.constants.Constants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -51,7 +52,7 @@ public class RestaurantPersistenceAdapter implements RestaurantPersistencePort {
 
     @Override
     public PageResult<RestaurantModel> listRestaurantsOrderedByName(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Constants.ORDER_BY_NAME).ascending());
         Page<RestaurantEntity> entityPage = restaurantRepository.findAll(pageable);
 
         List<RestaurantModel> restaurantModels = restaurantEntityMapper.entityToModelList(entityPage.getContent());
