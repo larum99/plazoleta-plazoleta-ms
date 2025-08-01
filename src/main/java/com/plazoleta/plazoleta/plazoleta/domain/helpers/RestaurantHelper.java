@@ -90,4 +90,15 @@ public class RestaurantHelper {
         }
     }
 
+    public void validatePageNumber(int page) {
+        if (page < DomainConstants.DEFAULT_PAGE_NUMBER) {
+            throw new PageNumberNegativeException();
+        }
+    }
+
+    public void validatePageSize(int size) {
+        if (size < DomainConstants.DEFAULT_SIZE_NUMBER) {
+            throw new PageSizeInvalidException();
+        }
+    }
 }

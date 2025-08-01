@@ -21,4 +21,9 @@ public class ControllerConstants {
     public static final String BEARER_PREFIX = "Bearer ";
 
     public static final String UPDATE_STATUS_DISH_PATH = "/dishes/{id}/status";
+
+    public static final String LIST_PATH_RESTAURANTS = "/restaurants";
+
+    public static final String DEFAULT_PAGE = "0";
+    public static final String DEFAULT_SIZE = "10";
 }

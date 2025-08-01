@@ -1,7 +1,9 @@
 package com.plazoleta.plazoleta.plazoleta.infrastructure.endpoints.rest;
 
-import com.plazoleta.plazoleta.commons.configurations.swagger.docs.RestaurantControllerDocs.CreateRestaurantDocs;
+import com.plazoleta.plazoleta.commons.configurations.swagger.docs.RestaurantControllerDocs.*;
+import com.plazoleta.plazoleta.plazoleta.application.dto.request.ListRestaurantRequest;
 import com.plazoleta.plazoleta.plazoleta.application.dto.request.SaveRestaurantRequest;
+import com.plazoleta.plazoleta.plazoleta.application.dto.response.PagedRestaurantResponse;
 import com.plazoleta.plazoleta.plazoleta.application.dto.response.SaveRestaurantResponse;
 import com.plazoleta.plazoleta.plazoleta.application.services.RestaurantService;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.utils.constants.ControllerConstants;
@@ -31,5 +33,15 @@ public class RestaurantController {
         String token = authorizationHeader.replace(ControllerConstants.BEARER_PREFIX, "");
         SaveRestaurantResponse response = restaurantService.saveRestaurant(request, token);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @ListRestaurantsDocs
+    @GetMapping(ControllerConstants.LIST_PATH_RESTAURANTS)
+    public ResponseEntity<PagedRestaurantResponse> listRestaurants(
+            @RequestParam(defaultValue = ControllerConstants.DEFAULT_PAGE) int page,
+            @RequestParam(defaultValue = ControllerConstants.DEFAULT_SIZE) int size
+    ) {
+        ListRestaurantRequest request = new ListRestaurantRequest(page, size);
+        return ResponseEntity.ok(restaurantService.listRestaurants(request));
     }
 }

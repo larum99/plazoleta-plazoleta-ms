@@ -65,4 +65,26 @@ public class RestaurantControllerDocs {
     })
     public @interface CreateRestaurantDocs {
     }
+
+    @Operation(
+            summary = SwaggerConstants.SUMMARY_LIST_RESTAURANTS,
+            description = SwaggerConstants.DESCRIPTION_LIST_RESTAURANTS,
+            responses = {
+                    @ApiResponse(
+                            responseCode = SwaggerConstants.OK,
+                            description = SwaggerConstants.RESPONSE_LIST_RESTAURANTS_SUCCESS,
+                            content = @Content(
+                                    mediaType = SwaggerConstants.APPLICATION_JSON,
+                                    examples = @ExampleObject(
+                                            name = SwaggerConstants.EXAMPLE_NAME_SUCCESS,
+                                            value = RestaurantSwaggerExamples.LIST_RESTAURANTS_RESPONSE
+                                    )
+                            )
+                    )
+            }
+    )
+    @Target({ ElementType.METHOD })
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface ListRestaurantsDocs {}
+
 }

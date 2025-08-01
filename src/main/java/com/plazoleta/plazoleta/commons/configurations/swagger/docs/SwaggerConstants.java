@@ -6,8 +6,7 @@ public class SwaggerConstants {
         throw new IllegalStateException("Utility class");
     }
 
-    // --- GENERAL ---
-    public static final String APPLICATION_JSON = "application/json";
+        public static final String APPLICATION_JSON = "application/json";
     public static final String CREATED = "201";
     public static final String OK = "200";
     public static final String BAD_REQUEST = "400";
@@ -19,7 +18,6 @@ public class SwaggerConstants {
     public static final String EXAMPLE_NAME_VALIDATION_ERROR = "Error de validación";
     public static final String EXAMPLE_NAME_NOT_FOUND = "No encontrado";
 
-    // --- RESTAURANT ---
     public static final String SUMMARY_CREATE_RESTAURANT = "Crear un nuevo restaurante";
     public static final String DESCRIPTION_CREATE_RESTAURANT = "Permite registrar un nuevo restaurante en la plataforma.";
     public static final String DESCRIPTION_CREATE_RESTAURANT_SUCCESS = "Restaurante creado exitosamente";
@@ -28,7 +26,6 @@ public class SwaggerConstants {
     public static final String SUMMARY_RESTAURANT_CREATED = "Restaurante creado";
     public static final String SUMMARY_RESTAURANT_DUPLICATE = "Restaurante duplicado";
 
-    // --- DISH ---
     public static final String SUMMARY_CREATE_DISH = "Crear un nuevo plato";
     public static final String DESCRIPTION_CREATE_DISH = "Permite registrar un nuevo plato en la plataforma.";
     public static final String REQUEST_BODY_CREATE_DISH = "Datos del plato a crear";
@@ -55,4 +52,9 @@ public class SwaggerConstants {
     public static final String SUMMARY_UNAUTHORIZED_OR_INVALID = "No autorizado o datos inválidos";
     public static final String DESCRIPTION_DISH_NOT_FOUND = "Plato no encontrado";
     public static final String SUMMARY_ID_NOT_FOUND = "ID inexistente";
+
+    public static final String SUMMARY_LIST_RESTAURANTS = "Listar restaurantes";
+    public static final String DESCRIPTION_LIST_RESTAURANTS = "Devuelve una lista paginada de restaurantes, ordenada alfabéticamente por nombre.";
+    public static final String RESPONSE_LIST_RESTAURANTS_SUCCESS = "Listado de restaurantes obtenido correctamente";
+
 }

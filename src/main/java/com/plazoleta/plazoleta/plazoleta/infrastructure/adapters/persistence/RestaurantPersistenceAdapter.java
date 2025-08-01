@@ -2,13 +2,19 @@ package com.plazoleta.plazoleta.plazoleta.infrastructure.adapters.persistence;
 
 import com.plazoleta.plazoleta.plazoleta.domain.model.RestaurantModel;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.out.RestaurantPersistencePort;
+import com.plazoleta.plazoleta.plazoleta.domain.utils.PageResult;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.entities.RestaurantEntity;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.mappers.RestaurantEntityMapper;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.repositories.mysql.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -41,5 +47,23 @@ public class RestaurantPersistenceAdapter implements RestaurantPersistencePort {
     public Optional<RestaurantModel> getRestaurantById(Long id) {
         return restaurantRepository.findById(id)
                 .map(restaurantEntityMapper::entityToModel);
+    }
+
+    @Override
+    public PageResult<RestaurantModel> listRestaurantsOrderedByName(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
+        Page<RestaurantEntity> entityPage = restaurantRepository.findAll(pageable);
+
+        List<RestaurantModel> restaurantModels = restaurantEntityMapper.entityToModelList(entityPage.getContent());
+
+        return new PageResult<>(
+                restaurantModels,
+                entityPage.getTotalElements(),
+                entityPage.getTotalPages(),
+                entityPage.getNumber(),
+                entityPage.getSize(),
+                entityPage.isFirst(),
+                entityPage.isLast()
+        );
     }
 }

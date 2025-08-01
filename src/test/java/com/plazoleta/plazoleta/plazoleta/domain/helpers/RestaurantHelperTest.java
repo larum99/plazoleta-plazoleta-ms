@@ -110,7 +110,6 @@ class RestaurantHelperTest {
 
     @Test
     void validateRole_withAdminRole_shouldNotThrowException() {
-        // Assuming DomainConstants.ROLE_ADMIN is "ADMINISTRADOR"
         assertDoesNotThrow(() -> restaurantHelper.validateRole(ADMIN_ROLE));
     }
 
@@ -122,5 +121,30 @@ class RestaurantHelperTest {
     @Test
     void validateRole_withNullRole_shouldThrowForbiddenException() {
         assertThrows(ForbiddenException.class, () -> restaurantHelper.validateRole(null));
+    }
+
+    @Test
+    void validatePageNumber_valid_shouldNotThrow() {
+        assertDoesNotThrow(() -> restaurantHelper.validatePageNumber(0));
+    }
+
+    @Test
+    void validatePageNumber_negative_shouldThrow() {
+        assertThrows(PageNumberNegativeException.class, () -> restaurantHelper.validatePageNumber(-1));
+    }
+
+    @Test
+    void validatePageSize_valid_shouldNotThrow() {
+        assertDoesNotThrow(() -> restaurantHelper.validatePageSize(1));
+    }
+
+    @Test
+    void validatePageSize_zero_shouldThrow() {
+        assertThrows(PageSizeInvalidException.class, () -> restaurantHelper.validatePageSize(0));
+    }
+
+    @Test
+    void validatePageSize_negative_shouldThrow() {
+        assertThrows(PageSizeInvalidException.class, () -> restaurantHelper.validatePageSize(-5));
     }
 }

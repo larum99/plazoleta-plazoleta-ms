@@ -5,6 +5,7 @@ import com.plazoleta.plazoleta.plazoleta.infrastructure.entities.RestaurantEntit
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.List;
 import java.util.Optional;
 
 @Mapper(componentModel = "spring")
@@ -23,4 +24,9 @@ public interface RestaurantEntityMapper {
         }
         return null;
     }
+
+    List<RestaurantModel> entityToModelList(List<RestaurantEntity> entities);
+
+    List<RestaurantEntity> modelToEntityList(List<RestaurantModel> models);
+
 }

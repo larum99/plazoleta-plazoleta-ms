@@ -15,10 +15,11 @@ public class SecurityConstants {
             "/swagger-ui/**",
             "/swagger-ui.html",
             "/v3/api-docs/**",
-            "/v3/api-docs"
+            "/v3/api-docs",
+            "/api/v1/plazoleta/**"
     };
 
-    public static final String RESTAURANT_PROTECTED_PATH = "/api/v1/restaurant/";
+    public static final String RESTAURANT_PROTECTED_PATH = "/api/v1/plazoleta/restaurant";
     public static final String DISH_PROTECTED_PATH = "/api/v1/dish/";
 
     public static final String APPLICATION_JSON = "application/json";
@@ -29,4 +30,6 @@ public class SecurityConstants {
           "timestamp": "%s"
         }
         """;
+
+
 }

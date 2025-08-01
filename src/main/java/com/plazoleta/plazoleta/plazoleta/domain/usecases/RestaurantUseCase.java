@@ -5,6 +5,7 @@ import com.plazoleta.plazoleta.plazoleta.domain.ports.in.RestaurantServicePort;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.out.RestaurantPersistencePort;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.out.UserValidationPort;
 import com.plazoleta.plazoleta.plazoleta.domain.helpers.RestaurantHelper;
+import com.plazoleta.plazoleta.plazoleta.domain.utils.PageResult;
 
 public class RestaurantUseCase implements RestaurantServicePort {
 
@@ -32,5 +33,12 @@ public class RestaurantUseCase implements RestaurantServicePort {
         helper.validateOwnerExistsAndHasRole(restaurantModel.getOwnerId());
 
         restaurantPersistencePort.saveRestaurant(restaurantModel);
+    }
+
+    @Override
+    public PageResult<RestaurantModel> listRestaurants(int page, int size) {
+        helper.validatePageNumber(page);
+        helper.validatePageSize(size);
+        return restaurantPersistencePort.listRestaurantsOrderedByName(page, size);
     }
 }

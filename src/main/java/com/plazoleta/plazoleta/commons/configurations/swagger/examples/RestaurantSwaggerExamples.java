@@ -30,4 +30,22 @@ public class RestaurantSwaggerExamples {
           "time": "2025-07-25T15:01:00"
         }
     """;
+
+    public static final String LIST_RESTAURANTS_RESPONSE = """
+        {
+            "currentPage": 0,
+            "totalPages": 2,
+            "totalElements": 12,
+               "content": [
+                            {
+                                "nombre": "Arepa Power",
+                                "urlLogo": "https://arepa-power.com/logo.png"
+                            },
+                            {
+                                "nombre": "Burgers & More",
+                                "urlLogo": "https://burgers.com/logo.jpg"
+                            }
+                           ]
+        }
+    """;
 }

@@ -27,4 +27,7 @@ public class DomainConstants {
     public static final String ERROR_REQUIRED_DISH_ID = "El ID del plato es obligatorio";
 
     public static final String ROLE_ADMIN = "ADMINISTRADOR";
+
+    public static final int DEFAULT_PAGE_NUMBER = 0;
+    public static final int DEFAULT_SIZE_NUMBER = 1;
 }
