@@ -134,4 +134,35 @@ public class DishControllerDocs {
             )
     })
     public @interface UpdateDishStatusDocs {}
+
+    @Target({ElementType.METHOD})
+    @Retention(RetentionPolicy.RUNTIME)
+    @Operation(
+            summary = SUMMARY_LIST_DISHES,
+            description = DESCRIPTION_LIST_DISHES
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = OK, description = DESCRIPTION_LIST_DISHES_SUCCESS,
+                    content = @Content(
+                            mediaType = APPLICATION_JSON,
+                            examples = @ExampleObject(
+                                    name = EXAMPLE_NAME_LIST,
+                                    summary = SUMMARY_DISH_LIST,
+                                    value = DishSwaggerExamples.DISH_LIST_RESPONSE
+                            )
+                    )
+            ),
+            @ApiResponse(responseCode = BAD_REQUEST, description = DESCRIPTION_BAD_REQUEST_MISSING_FILTERS,
+                    content = @Content(
+                            mediaType = APPLICATION_JSON,
+                            examples = @ExampleObject(
+                                    name = EXAMPLE_NAME_ERROR,
+                                    summary = SUMMARY_MISSING_FILTERS,
+                                    value = DishSwaggerExamples.MISSING_FILTERS_RESPONSE
+                            )
+                    )
+            )
+    })
+    public @interface ListDishesDocs {}
+
 }

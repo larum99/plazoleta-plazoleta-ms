@@ -1,12 +1,16 @@
 package com.plazoleta.plazoleta.plazoleta.infrastructure.endpoints.rest;
 
 import com.plazoleta.plazoleta.commons.configurations.swagger.docs.DishControllerDocs.*;
+import com.plazoleta.plazoleta.plazoleta.application.dto.request.ListDishRequest;
 import com.plazoleta.plazoleta.plazoleta.application.dto.request.SaveDishRequest;
 import com.plazoleta.plazoleta.plazoleta.application.dto.request.UpdateDishRequest;
+import com.plazoleta.plazoleta.plazoleta.application.dto.response.PagedDishResponse;
 import com.plazoleta.plazoleta.plazoleta.application.dto.response.SaveDishResponse;
 import com.plazoleta.plazoleta.plazoleta.application.dto.response.UpdateDishResponse;
 import com.plazoleta.plazoleta.plazoleta.application.dto.response.UpdateDishStatusResponse;
 import com.plazoleta.plazoleta.plazoleta.application.services.DishService;
+import com.plazoleta.plazoleta.plazoleta.domain.criteria.DishCriteria;
+import com.plazoleta.plazoleta.plazoleta.domain.utils.PageResult;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.utils.constants.ControllerConstants;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -62,4 +66,16 @@ public class DishController {
         return ResponseEntity.ok(response);
     }
 
+    @ListDishesDocs
+    @GetMapping(ControllerConstants.LIST_DISHES_PATH)
+    public ResponseEntity<PagedDishResponse> getDishesByCriteria(
+            @RequestParam(required = false) Long restaurantId,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(defaultValue = ControllerConstants.DEFAULT_PAGE) int page,
+            @RequestParam(defaultValue = ControllerConstants.DEFAULT_SIZE) int size
+    ) {
+        ListDishRequest request = new ListDishRequest(restaurantId, categoryId, page, size);
+        PagedDishResponse response = dishService.listDishes(request);
+        return ResponseEntity.ok(response);
+    }
 }

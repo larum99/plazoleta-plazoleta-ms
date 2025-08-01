@@ -1,11 +1,13 @@
 package com.plazoleta.plazoleta.plazoleta.domain.usecases;
 
+import com.plazoleta.plazoleta.plazoleta.domain.criteria.DishCriteria;
 import com.plazoleta.plazoleta.plazoleta.domain.helpers.DishHelper;
 import com.plazoleta.plazoleta.plazoleta.domain.model.DishModel;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.in.DishServicePort;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.out.CategoryPersistencePort;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.out.DishPersistencePort;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.out.RestaurantPersistencePort;
+import com.plazoleta.plazoleta.plazoleta.domain.utils.PageResult;
 
 import java.math.BigDecimal;
 
@@ -58,4 +60,9 @@ public class DishUseCase implements DishServicePort {
         dishPersistencePort.updateDish(dish);
     }
 
+    @Override
+    public PageResult<DishModel> getMenuByCriteria(DishCriteria criteria) {
+        helper.validateCriteria(criteria);
+        return dishPersistencePort.getMenuByCriteria(criteria);
+    }
 }

@@ -57,4 +57,21 @@ public class SwaggerConstants {
     public static final String DESCRIPTION_LIST_RESTAURANTS = "Devuelve una lista paginada de restaurantes, ordenada alfabéticamente por nombre.";
     public static final String RESPONSE_LIST_RESTAURANTS_SUCCESS = "Listado de restaurantes obtenido correctamente";
 
+    public static final String SUMMARY_LIST_DISHES = "Listar platos filtrados y paginados";
+    public static final String DESCRIPTION_LIST_DISHES = "Obtiene una lista de platos según filtros por restaurante y categoría, incluyendo paginación y ordenamiento.";
+    public static final String DESCRIPTION_LIST_DISHES_SUCCESS = "Listado de platos obtenido exitosamente.";
+    public static final String DESCRIPTION_BAD_REQUEST_MISSING_FILTERS = "Faltan filtros requeridos como restaurantId o categoryId.";
+
+    public static final String PARAM_RESTAURANT_ID_DESCRIPTION = "ID del restaurante para filtrar los platos.";
+    public static final String PARAM_CATEGORY_ID_DESCRIPTION = "ID de la categoría para filtrar los platos.";
+    public static final String PARAM_PAGE_DESCRIPTION = "Número de página para la paginación.";
+    public static final String PARAM_SIZE_DESCRIPTION = "Cantidad de elementos por página.";
+    public static final String PARAM_SORT_BY_DESCRIPTION = "Campo por el cual se desea ordenar.";
+    public static final String PARAM_SORT_DIRECTION_DESCRIPTION = "Dirección de ordenamiento: asc o desc.";
+
+    public static final String EXAMPLE_NAME_LIST = "dishListExample";
+    public static final String SUMMARY_DISH_LIST = "Ejemplo de listado de platos";
+    public static final String SUMMARY_MISSING_FILTERS = "Faltan filtros obligatorios";
+
+
 }

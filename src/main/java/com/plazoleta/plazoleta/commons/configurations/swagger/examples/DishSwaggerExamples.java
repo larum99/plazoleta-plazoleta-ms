@@ -57,4 +57,40 @@ public class DishSwaggerExamples {
             "message": "No se encontró un plato con el ID proporcionado"
         }
     """;
+
+    public static final String DISH_LIST_RESPONSE = """
+        {
+               "content": [
+                   {
+                      "id": 1,
+                      "name": "Hamburguesa Clásica",
+                      "description": "Con carne angus y queso cheddar.",
+                      "price": 15000,
+                      "available": true,
+                      "categoryId": 2,
+                      "restaurantId": 1
+                    },
+                    {
+                        "id": 2,
+                        "name": "Pizza Margarita",
+                        "description": "Con albahaca fresca y mozzarella.",
+                        "price": 18000,
+                        "available": true,
+                        "categoryId": 2,
+                        "restaurantId": 1
+                    }
+                            ],
+                            "totalPages": 1,
+                            "totalElements": 2,
+                            "size": 10,
+                            "number": 0
+        }
+    """;
+
+    public static final String MISSING_FILTERS_RESPONSE = """
+        {
+            "message": "Se requiere el ID de categoría y restaurante para listar los platos.",
+            "httpStatus": "BAD_REQUEST"
+        }
+    """;
 }

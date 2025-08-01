@@ -1,5 +1,6 @@
 package com.plazoleta.plazoleta.plazoleta.domain.helpers;
 
+import com.plazoleta.plazoleta.plazoleta.domain.criteria.DishCriteria;
 import com.plazoleta.plazoleta.plazoleta.domain.exceptions.*;
 import com.plazoleta.plazoleta.plazoleta.domain.model.DishModel;
 import com.plazoleta.plazoleta.plazoleta.domain.model.RestaurantModel;
@@ -112,4 +113,28 @@ public class DishHelper {
         return dish;
     }
 
+    private void validatePageNumber(int page) {
+        if (page < DomainConstants.DEFAULT_PAGE_NUMBER) {
+            throw new PageNumberNegativeException();
+        }
+    }
+
+    private void validatePageSize(int size) {
+        if (size <= DomainConstants.DEFAULT_SIZE_NUMBER) {
+            throw new PageSizeInvalidException();
+        }
+    }
+
+    public void validateCriteria(DishCriteria criteria) {
+        if (criteria.getCategoryId() == null) {
+            throw new MissingFieldException(DomainConstants.ERROR_REQUIRED_CATEGORY_ID);
+        }
+
+        if (criteria.getRestaurantId() == null) {
+            throw new MissingFieldException(DomainConstants.ERROR_REQUIRED_RESTAURANT_ID);
+        }
+
+        validatePageNumber(criteria.getPage());
+        validatePageSize(criteria.getSize());
+    }
 }

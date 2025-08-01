@@ -1,5 +1,6 @@
 package com.plazoleta.plazoleta.plazoleta.domain.helpers;
 
+import com.plazoleta.plazoleta.plazoleta.domain.criteria.DishCriteria;
 import com.plazoleta.plazoleta.plazoleta.domain.exceptions.*;
 import com.plazoleta.plazoleta.plazoleta.domain.model.CategoryModel;
 import com.plazoleta.plazoleta.plazoleta.domain.model.DishModel;
@@ -253,5 +254,36 @@ class DishHelperTest {
 
         assertThrows(UnauthorizedUserException.class,
                 () -> dishHelper.getValidatedDishForStatusChange(DISH_ID, wrongOwnerId));
+    }
+
+    @Test
+    void validateCriteria_withValidCriteria_shouldNotThrowException() {
+        DishCriteria criteria = new DishCriteria(RESTAURANT_ID, CATEGORY_ID, 1, 10);
+        assertDoesNotThrow(() -> dishHelper.validateCriteria(criteria));
+    }
+
+    @Test
+    void validateCriteria_withNullRestaurantId_shouldThrowMissingFieldException() {
+        DishCriteria criteria = new DishCriteria(null, CATEGORY_ID, 1, 10);
+        assertThrows(MissingFieldException.class, () -> dishHelper.validateCriteria(criteria));
+    }
+
+    @Test
+    void validateCriteria_withNullCategoryId_shouldThrowMissingFieldException() {
+        DishCriteria criteria = new DishCriteria(RESTAURANT_ID, null, 1, 10);
+        assertThrows(MissingFieldException.class, () -> dishHelper.validateCriteria(criteria));
+    }
+
+    @Test
+    void validateCriteria_withInvalidPageNumber_shouldThrowPageNumberNegativeException() {
+        DishCriteria criteria = new DishCriteria(RESTAURANT_ID, CATEGORY_ID, -1, 10);
+        assertThrows(PageNumberNegativeException.class, () -> dishHelper.validateCriteria(criteria));
+    }
+
+    @ParameterizedTest
+    @CsvSource({"0", "-1"})
+    void validateCriteria_withInvalidPageSize_shouldThrowPageSizeInvalidException(int invalidSize) {
+        DishCriteria criteria = new DishCriteria(RESTAURANT_ID, CATEGORY_ID, 1, invalidSize);
+        assertThrows(PageSizeInvalidException.class, () -> dishHelper.validateCriteria(criteria));
     }
 }
