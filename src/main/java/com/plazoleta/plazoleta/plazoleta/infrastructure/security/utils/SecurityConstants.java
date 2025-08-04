@@ -20,7 +20,7 @@ public class SecurityConstants {
     };
 
     public static final String RESTAURANT_PROTECTED_PATH = "/api/v1/plazoleta/restaurant";
-    public static final String DISH_PROTECTED_PATH = "/api/v1/dish/";
+    public static final String DISH_PROTECTED_PATH = "/api/v1/plazoleta/dish";
 
     public static final String APPLICATION_JSON = "application/json";
 
@@ -29,7 +29,7 @@ public class SecurityConstants {
           "message": "Acceso denegado: no tienes los permisos necesarios.",
           "timestamp": "%s"
         }
-        """;
+    """;
 
-
+    public static final String ORDER_PROTECTED_PATH = "/api/v1/plazoleta/orders";
 }

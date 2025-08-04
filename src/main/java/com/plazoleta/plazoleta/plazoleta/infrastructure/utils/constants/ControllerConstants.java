@@ -28,4 +28,8 @@ public class ControllerConstants {
     public static final String DEFAULT_SIZE = "10";
 
     public static final String LIST_DISHES_PATH = "/dishes";
+
+    public static final String SAVE_ORDER_PATH = "/orders";
+
+    public static final String ROLE_CLIENTE = "hasRole('CLIENTE')";
 }

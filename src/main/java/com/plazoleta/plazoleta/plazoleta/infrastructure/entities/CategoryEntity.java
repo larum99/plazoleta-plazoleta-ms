@@ -23,6 +23,6 @@ public class CategoryEntity {
     @Column(name = "description", nullable = false, length = 255)
     private String description;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-    private List<DishEntity> dishes;
+//    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+//    private List<DishEntity> dishes;
 }

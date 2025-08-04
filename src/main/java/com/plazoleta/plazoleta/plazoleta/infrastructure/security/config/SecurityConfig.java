@@ -32,6 +32,7 @@ public class SecurityConfig {
                         .requestMatchers(SecurityConstants.PUBLIC_PATHS).permitAll()
                         .requestMatchers(SecurityConstants.RESTAURANT_PROTECTED_PATH).authenticated()
                         .requestMatchers(SecurityConstants.DISH_PROTECTED_PATH).authenticated()
+                        .requestMatchers(SecurityConstants.ORDER_PROTECTED_PATH).authenticated()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex

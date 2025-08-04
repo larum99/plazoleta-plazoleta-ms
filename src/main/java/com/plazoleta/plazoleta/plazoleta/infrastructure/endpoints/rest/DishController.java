@@ -9,8 +9,6 @@ import com.plazoleta.plazoleta.plazoleta.application.dto.response.SaveDishRespon
 import com.plazoleta.plazoleta.plazoleta.application.dto.response.UpdateDishResponse;
 import com.plazoleta.plazoleta.plazoleta.application.dto.response.UpdateDishStatusResponse;
 import com.plazoleta.plazoleta.plazoleta.application.services.DishService;
-import com.plazoleta.plazoleta.plazoleta.domain.criteria.DishCriteria;
-import com.plazoleta.plazoleta.plazoleta.domain.utils.PageResult;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.utils.constants.ControllerConstants;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

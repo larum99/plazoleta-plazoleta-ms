@@ -2,7 +2,6 @@ package com.plazoleta.plazoleta.plazoleta.infrastructure.adapters.persistence;
 
 import com.plazoleta.plazoleta.plazoleta.domain.model.CategoryModel;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.out.CategoryPersistencePort;
-import com.plazoleta.plazoleta.plazoleta.infrastructure.entities.CategoryEntity;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.mappers.CategoryEntityMapper;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.repositories.mysql.CategoryRepository;
 import lombok.RequiredArgsConstructor;

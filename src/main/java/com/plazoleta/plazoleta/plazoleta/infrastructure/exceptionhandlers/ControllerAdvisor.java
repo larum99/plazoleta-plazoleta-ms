@@ -95,4 +95,19 @@ public class ControllerAdvisor {
                 ExceptionConstants.FORBIDDEN_OPERATION_MESSAGE, LocalDateTime.now()));
     }
 
+    @ExceptionHandler(ClientHasActiveOrderException.class)
+    public ResponseEntity<ExceptionResponse> handleClientHasActiveOrder(ClientHasActiveOrderException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                new ExceptionResponse(ExceptionConstants.CLIENT_HAS_ACTIVE_ORDER_MESSAGE, LocalDateTime.now())
+
+        );
+    }
+
+    @ExceptionHandler(DishDoesNotBelongToRestaurantException.class)
+    public ResponseEntity<ExceptionResponse> handleDishNotBelongToRestaurant(DishDoesNotBelongToRestaurantException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                new ExceptionResponse(ExceptionConstants.DISH_NOT_BELONG_RESTAURANT_MESSAGE, LocalDateTime.now())
+        );
+    }
+
 }

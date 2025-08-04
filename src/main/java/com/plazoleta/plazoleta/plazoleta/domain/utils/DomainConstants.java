@@ -30,4 +30,8 @@ public class DomainConstants {
 
     public static final int DEFAULT_PAGE_NUMBER = 0;
     public static final int DEFAULT_SIZE_NUMBER = 1;
+
+    public static final String ORDER_MISSING_DISHES = "El pedido debe contener al menos un plato.";
+
+    public static final String ROLE_CLIENT = "CLIENTE";
 }
