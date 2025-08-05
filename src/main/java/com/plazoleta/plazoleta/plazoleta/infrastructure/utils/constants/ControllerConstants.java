@@ -32,4 +32,6 @@ public class ControllerConstants {
     public static final String SAVE_ORDER_PATH = "/orders";
 
     public static final String ROLE_CLIENTE = "hasRole('CLIENTE')";
+
+    public static final String SAVE_PATH_EMPLOYEE_RESTAURANT = "/employee-restaurant";
 }
