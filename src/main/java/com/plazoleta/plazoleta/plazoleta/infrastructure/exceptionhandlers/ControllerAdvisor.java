@@ -110,4 +110,16 @@ public class ControllerAdvisor {
         );
     }
 
+    @ExceptionHandler(EmployeeAlreadyAssignedException.class)
+    public ResponseEntity<ExceptionResponse> handleEmployeeAlreadyAssigned(EmployeeAlreadyAssignedException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ExceptionResponse(
+                ExceptionConstants.EMPLOYEE_ALREADY_ASSIGNED_MESSAGE, LocalDateTime.now()));
+    }
+
+    @ExceptionHandler(InvalidEmployeeException.class)
+    public ResponseEntity<ExceptionResponse> handleInvalidEmployee(InvalidEmployeeException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ExceptionResponse(
+                ExceptionConstants.INVALID_EMPLOYEE_MESSAGE, LocalDateTime.now()));
+    }
+
 }

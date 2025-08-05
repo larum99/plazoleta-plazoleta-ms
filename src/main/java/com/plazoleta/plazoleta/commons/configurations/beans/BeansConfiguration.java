@@ -1,28 +1,21 @@
 package com.plazoleta.plazoleta.commons.configurations.beans;
 
-import com.plazoleta.plazoleta.plazoleta.domain.helpers.OrderHelper;
+import com.plazoleta.plazoleta.plazoleta.application.services.EmployeeRestaurantService;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.in.DishServicePort;
+import com.plazoleta.plazoleta.plazoleta.domain.ports.in.EmployeeRestaurantServicePort;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.in.OrderServicePort;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.in.RoleValidatorPort;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.out.*;
 import com.plazoleta.plazoleta.plazoleta.domain.usecases.DishUseCase;
+import com.plazoleta.plazoleta.plazoleta.domain.usecases.EmployeeRestaurantUseCase;
 import com.plazoleta.plazoleta.plazoleta.domain.usecases.OrderUseCase;
 import com.plazoleta.plazoleta.plazoleta.domain.usecases.RestaurantUseCase;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.adapters.feign.UserValidationAdapter;
-import com.plazoleta.plazoleta.plazoleta.infrastructure.adapters.persistence.CategoryPersistenceAdapter;
-import com.plazoleta.plazoleta.plazoleta.infrastructure.adapters.persistence.DishPersistenceAdapter;
-import com.plazoleta.plazoleta.plazoleta.infrastructure.adapters.persistence.OrderPersistenceAdapter;
-import com.plazoleta.plazoleta.plazoleta.infrastructure.adapters.persistence.RestaurantPersistenceAdapter;
+import com.plazoleta.plazoleta.plazoleta.infrastructure.adapters.persistence.*;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.adapters.security.RoleValidatorAdapter;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.clients.feign.UserFeignClient;
-import com.plazoleta.plazoleta.plazoleta.infrastructure.mappers.CategoryEntityMapper;
-import com.plazoleta.plazoleta.plazoleta.infrastructure.mappers.DishEntityMapper;
-import com.plazoleta.plazoleta.plazoleta.infrastructure.mappers.OrderEntityMapper;
-import com.plazoleta.plazoleta.plazoleta.infrastructure.mappers.RestaurantEntityMapper;
-import com.plazoleta.plazoleta.plazoleta.infrastructure.repositories.mysql.CategoryRepository;
-import com.plazoleta.plazoleta.plazoleta.infrastructure.repositories.mysql.DishRepository;
-import com.plazoleta.plazoleta.plazoleta.infrastructure.repositories.mysql.OrderRepository;
-import com.plazoleta.plazoleta.plazoleta.infrastructure.repositories.mysql.RestaurantRepository;
+import com.plazoleta.plazoleta.plazoleta.infrastructure.mappers.*;
+import com.plazoleta.plazoleta.plazoleta.infrastructure.repositories.mysql.*;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.security.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -44,6 +37,9 @@ public class BeansConfiguration {
     private final OrderEntityMapper orderEntityMapper;
 
     private final UserFeignClient userFeignClient;
+
+    private final EmployeeRestaurantRepository employeeRestaurantRepository;
+    private final EmployeeRestaurantEntityMapper employeeRestaurantEntityMapper;
 
     @Bean
     public RestaurantUseCase restaurantUseCase() {
@@ -110,6 +106,21 @@ public class BeansConfiguration {
         return new OrderPersistenceAdapter(
                 orderRepository,
                 orderEntityMapper
+        );
+    }
+
+    @Bean
+    public EmployeeRestaurantPersistencePort employeeRestaurantPersistencePort() {
+        return new EmployeeRestaurantPersistenceAdapter(
+                employeeRestaurantRepository
+        );
+    }
+
+    @Bean
+    public EmployeeRestaurantServicePort employeeRestaurantServicePort() {
+        return new EmployeeRestaurantUseCase(
+                employeeRestaurantPersistencePort(),
+                userValidationPort()
         );
     }
 }

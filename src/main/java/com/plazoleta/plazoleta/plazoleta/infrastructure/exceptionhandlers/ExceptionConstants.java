@@ -22,5 +22,6 @@ public class ExceptionConstants {
     public static final String FORBIDDEN_OPERATION_MESSAGE = "No tienes permisos para realizar esta operación.";
     public static final String CLIENT_HAS_ACTIVE_ORDER_MESSAGE = "El cliente ya tiene un pedido activo.";
     public static final String DISH_NOT_BELONG_RESTAURANT_MESSAGE = "El plato no pertenece al restaurante especificado.";
-
+    public static final String EMPLOYEE_ALREADY_ASSIGNED_MESSAGE = "El empleado ya está asignado a un restaurante.";
+    public static final String INVALID_EMPLOYEE_MESSAGE = "El ID del empleado no es válido o no corresponde a un usuario con rol EMPLEADO.";
 }

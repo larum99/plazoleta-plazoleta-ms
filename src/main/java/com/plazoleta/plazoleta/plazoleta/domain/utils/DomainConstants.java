@@ -34,4 +34,6 @@ public class DomainConstants {
     public static final String ORDER_MISSING_DISHES = "El pedido debe contener al menos un plato.";
 
     public static final String ROLE_CLIENT = "CLIENTE";
+
+   public static final String ROLE_EMPLOYEE = "EMPLEADO";
 }
