@@ -18,7 +18,7 @@ public class OrderModel {
     }
 
     public OrderModel(Long id, Long clientId, RestaurantModel restaurant, List<OrderDishModel> dishes,
-                      OrderStatus status, LocalDateTime date, Long chefId) {
+                      OrderStatus status, LocalDateTime date) {
         this.id = id;
         this.clientId = clientId;
         this.restaurant = restaurant;

@@ -31,5 +31,5 @@ public class SecurityConstants {
         }
     """;
 
-    public static final String ORDER_PROTECTED_PATH = "/api/v1/plazoleta/orders";
+    public static final String ORDER_PROTECTED_PATH = "/api/v1/plazoleta/order";
 }

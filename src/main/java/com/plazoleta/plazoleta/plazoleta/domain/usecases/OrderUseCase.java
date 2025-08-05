@@ -1,5 +1,6 @@
 package com.plazoleta.plazoleta.plazoleta.domain.usecases;
 
+import com.plazoleta.plazoleta.plazoleta.domain.criteria.OrderListCriteria;
 import com.plazoleta.plazoleta.plazoleta.domain.helpers.OrderHelper;
 import com.plazoleta.plazoleta.plazoleta.domain.model.OrderModel;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.in.OrderServicePort;
@@ -7,8 +8,10 @@ import com.plazoleta.plazoleta.plazoleta.domain.ports.out.DishPersistencePort;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.out.OrderPersistencePort;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.out.RestaurantPersistencePort;
 import com.plazoleta.plazoleta.plazoleta.domain.utils.OrderStatus;
+import com.plazoleta.plazoleta.plazoleta.domain.utils.PageResult;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class OrderUseCase implements OrderServicePort {
 
@@ -40,4 +43,11 @@ public class OrderUseCase implements OrderServicePort {
 
         orderPersistencePort.saveOrder(orderModel);
     }
+
+    @Override
+    public PageResult<OrderModel> listOrders(OrderListCriteria criteria, String role, Long employeeId) {
+
+        return orderPersistencePort.getOrdersByCriteria(criteria);
+    }
+
 }

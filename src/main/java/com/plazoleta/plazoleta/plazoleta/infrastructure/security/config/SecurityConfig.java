@@ -33,6 +33,7 @@ public class SecurityConfig {
                         .requestMatchers(SecurityConstants.RESTAURANT_PROTECTED_PATH).authenticated()
                         .requestMatchers(SecurityConstants.DISH_PROTECTED_PATH).authenticated()
                         .requestMatchers(SecurityConstants.ORDER_PROTECTED_PATH).authenticated()
+                        .requestMatchers("/api/v1/plazoleta/orders**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex

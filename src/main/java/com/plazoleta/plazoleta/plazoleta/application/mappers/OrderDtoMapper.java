@@ -2,6 +2,7 @@ package com.plazoleta.plazoleta.plazoleta.application.mappers;
 
 import com.plazoleta.plazoleta.plazoleta.application.dto.request.CreateOrderRequest;
 import com.plazoleta.plazoleta.plazoleta.application.dto.request.OrderDishRequest;
+import com.plazoleta.plazoleta.plazoleta.application.dto.response.OrderResponse;
 import com.plazoleta.plazoleta.plazoleta.domain.model.OrderDishModel;
 import com.plazoleta.plazoleta.plazoleta.domain.model.OrderModel;
 import org.mapstruct.Mapper;
@@ -18,4 +19,6 @@ public interface OrderDtoMapper {
     List<OrderDishModel> toOrderDishModelList(List<OrderDishRequest> dishRequests);
     @Mapping(target = "dish.id", source = "dishId")
     OrderDishModel toOrderDishModel(OrderDishRequest request);
+
+    List<OrderResponse> modelListToResponseList(List<OrderModel> modelList);
 }

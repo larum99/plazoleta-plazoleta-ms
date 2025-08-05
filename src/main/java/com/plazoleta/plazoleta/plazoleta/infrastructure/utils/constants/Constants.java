@@ -9,4 +9,5 @@ public class Constants {
     public static final String RESTAURANT = "restaurant";
     public static final String ID = "id";
     public static final String CATEGORY = "category";
+    public static final String STATUS = "status";
 }

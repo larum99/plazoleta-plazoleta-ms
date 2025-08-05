@@ -1,12 +1,20 @@
 package com.plazoleta.plazoleta.plazoleta.infrastructure.adapters.persistence;
 
+import com.plazoleta.plazoleta.plazoleta.domain.criteria.OrderListCriteria;
 import com.plazoleta.plazoleta.plazoleta.domain.model.OrderModel;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.out.OrderPersistencePort;
 import com.plazoleta.plazoleta.plazoleta.domain.utils.OrderStatus;
+import com.plazoleta.plazoleta.plazoleta.domain.utils.PageResult;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.entities.OrderEntity;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.mappers.OrderEntityMapper;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.repositories.mysql.OrderRepository;
+import com.plazoleta.plazoleta.plazoleta.infrastructure.specifications.OrderSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,8 +57,25 @@ public class OrderPersistenceAdapter implements OrderPersistencePort {
         return Optional.empty();
     }
 
-    public List<OrderModel> getOrdersByClientIdAndStatuses(Long clientId, List<String> statuses) {
-        List<OrderEntity> entities = orderRepository.findByClientIdAndStatusIn(clientId, statuses);
-        return orderEntityMapper.entityToModelList(entities);
+    @Override
+    public PageResult<OrderModel> getOrdersByCriteria(OrderListCriteria criteria) {
+        Pageable pageable = PageRequest.of(criteria.getPage(), criteria.getSize());
+
+        Specification<OrderEntity> spec = Specification
+                .where(OrderSpecification.hasRestaurantId(criteria.getRestaurantId()))
+                .and(OrderSpecification.hasStatus(criteria.getStatus()));
+
+        Page<OrderEntity> page = orderRepository.findAll(spec, pageable);
+        List<OrderModel> results = orderEntityMapper.entityToModelList(page.getContent());
+
+        return new PageResult<>(
+                results,
+                page.getTotalElements(),
+                page.getTotalPages(),
+                page.getNumber(),
+                page.getSize(),
+                page.isFirst(),
+                page.isLast()
+        );
     }
 }

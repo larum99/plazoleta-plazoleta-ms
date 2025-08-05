@@ -1,4 +1,8 @@
 package com.plazoleta.plazoleta.plazoleta.application.dto.request;
 
-public class ListOrderRequest {
-}
+public record ListOrderRequest(
+        Long restaurantId,
+        String status,
+        int page,
+        int size
+) {}
