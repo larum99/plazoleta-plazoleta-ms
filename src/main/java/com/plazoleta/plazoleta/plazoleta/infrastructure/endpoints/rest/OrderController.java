@@ -4,7 +4,6 @@ import com.plazoleta.plazoleta.commons.configurations.swagger.docs.OrderControll
 import com.plazoleta.plazoleta.plazoleta.application.dto.request.CreateOrderRequest;
 import com.plazoleta.plazoleta.plazoleta.application.dto.request.ListOrderRequest;
 import com.plazoleta.plazoleta.plazoleta.application.dto.response.CreateOrderResponse;
-import com.plazoleta.plazoleta.plazoleta.application.dto.response.OrderResponse;
 import com.plazoleta.plazoleta.plazoleta.application.dto.response.PagedOrderResponse;
 import com.plazoleta.plazoleta.plazoleta.application.services.OrderService;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.utils.constants.ControllerConstants;
@@ -14,8 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(ControllerConstants.BASE_URL)
@@ -40,13 +37,12 @@ public class OrderController {
     @PreAuthorize(ControllerConstants.ROLE_EMPLOYEE)
     public ResponseEntity<PagedOrderResponse> getOrdersByCriteria(
             @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
-            @RequestParam Long restaurantId,
             @RequestParam(required = false) String status,
             @RequestParam(defaultValue = ControllerConstants.DEFAULT_PAGE) int page,
             @RequestParam(defaultValue = ControllerConstants.DEFAULT_SIZE) int size
     ) {
         String token = authorizationHeader.replace(ControllerConstants.BEARER_PREFIX, "");
-        ListOrderRequest request = new ListOrderRequest(restaurantId, status, page, size);
+        ListOrderRequest request = new ListOrderRequest(status, page, size);
         PagedOrderResponse response = orderService.listOrdersByRestaurant(request, token);
         return ResponseEntity.ok(response);
     }

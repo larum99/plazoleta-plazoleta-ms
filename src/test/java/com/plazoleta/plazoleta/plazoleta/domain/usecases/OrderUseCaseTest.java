@@ -1,5 +1,6 @@
 package com.plazoleta.plazoleta.plazoleta.domain.usecases;
 
+import com.plazoleta.plazoleta.plazoleta.domain.criteria.OrderListCriteria;
 import com.plazoleta.plazoleta.plazoleta.domain.exceptions.ClientHasActiveOrderException;
 import com.plazoleta.plazoleta.plazoleta.domain.exceptions.DishDoesNotBelongToRestaurantException;
 import com.plazoleta.plazoleta.plazoleta.domain.exceptions.DishNotFoundException;
@@ -15,6 +16,7 @@ import com.plazoleta.plazoleta.plazoleta.domain.ports.out.DishPersistencePort;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.out.OrderPersistencePort;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.out.RestaurantPersistencePort;
 import com.plazoleta.plazoleta.plazoleta.domain.utils.OrderStatus;
+import com.plazoleta.plazoleta.plazoleta.domain.utils.PageResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -49,6 +51,7 @@ class OrderUseCaseTest {
     private OrderUseCase orderUseCase;
 
     private static final Long CLIENT_ID = 1L;
+    private static final Long EMPLOYEE_ID = 2L;
     private static final Long RESTAURANT_ID = 10L;
     private static final Long DISH_ID = 100L;
     private static final String CLIENT_ROLE = "CLIENTE";
@@ -76,7 +79,7 @@ class OrderUseCaseTest {
         validOrder.setRestaurant(restaurantModel);
         validOrder.setDishes(List.of(orderDishModel));
 
-        orderUseCase = new OrderUseCase(orderPersistencePort, dishPersistencePort, restaurantPersistencePort);
+        orderUseCase = new OrderUseCase(orderPersistencePort, dishPersistencePort, restaurantPersistencePort, null);
         ReflectionTestUtils.setField(orderUseCase, "orderHelper", orderHelper);
     }
 
@@ -165,4 +168,42 @@ class OrderUseCaseTest {
 
         verify(orderPersistencePort, never()).saveOrder(any());
     }
+
+    @Test
+    void listOrders_withValidCriteria_shouldReturnPageResult() {
+        Long expectedRestaurantId = RESTAURANT_ID;
+        String status = OrderStatus.PENDIENTE.name();
+        int page = 0;
+        int size = 10;
+
+        OrderListCriteria inputCriteria = new OrderListCriteria(
+                null,
+                status,
+                page,
+                size
+        );
+
+        PageResult<OrderModel> expectedPageResult = new PageResult<>(
+                List.of(validOrder), 1L, 1, page, size, true, true
+        );
+
+        when(orderHelper.getRestaurantIdByEmployeeId(EMPLOYEE_ID)).thenReturn(expectedRestaurantId);
+        when(orderPersistencePort.getOrdersByCriteria(any(OrderListCriteria.class))).thenReturn(expectedPageResult);
+
+        PageResult<OrderModel> result = orderUseCase.listOrders(inputCriteria, OWNER_ROLE, EMPLOYEE_ID);
+
+        assertNotNull(result);
+        assertEquals(1, result.getContent().size());
+        assertEquals(expectedRestaurantId, result.getContent().get(0).getRestaurant().getId());
+
+        ArgumentCaptor<OrderListCriteria> criteriaCaptor = ArgumentCaptor.forClass(OrderListCriteria.class);
+        verify(orderPersistencePort).getOrdersByCriteria(criteriaCaptor.capture());
+
+        OrderListCriteria usedCriteria = criteriaCaptor.getValue();
+        assertEquals(expectedRestaurantId, usedCriteria.getRestaurantId());
+        assertEquals(status, usedCriteria.getStatus());
+        assertEquals(page, usedCriteria.getPage());
+        assertEquals(size, usedCriteria.getSize());
+    }
+
 }

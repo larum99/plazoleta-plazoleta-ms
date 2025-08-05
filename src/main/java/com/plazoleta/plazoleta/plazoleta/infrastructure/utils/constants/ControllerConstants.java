@@ -29,9 +29,13 @@ public class ControllerConstants {
 
     public static final String LIST_DISHES_PATH = "/dishes";
 
-    public static final String SAVE_ORDER_PATH = "/orders";
+    public static final String SAVE_ORDER_PATH = "/order";
 
-    public static final String ROLE_CLIENTE = "hasRole('CLIENTE')";
+    public static final String ROLE_CLIENT = "hasRole('CLIENTE')";
 
     public static final String SAVE_PATH_EMPLOYEE_RESTAURANT = "/employee-restaurant";
+
+    public static final String LIST_ORDERS_PATH = "/orders";
+
+    public static final String ROLE_EMPLOYEE = "hasRole('EMPLEADO')";
 }

@@ -1,6 +1,5 @@
 package com.plazoleta.plazoleta.commons.configurations.beans;
 
-import com.plazoleta.plazoleta.plazoleta.application.services.EmployeeRestaurantService;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.in.DishServicePort;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.in.EmployeeRestaurantServicePort;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.in.OrderServicePort;
@@ -97,7 +96,8 @@ public class BeansConfiguration {
         return new OrderUseCase(
                 orderPersistencePort(),
                 dishPersistencePort(),
-                restaurantPersistencePort()
+                restaurantPersistencePort(),
+                employeeRestaurantPersistencePort()
         );
     }
 

@@ -4,6 +4,7 @@ import com.plazoleta.plazoleta.plazoleta.domain.exceptions.*;
 import com.plazoleta.plazoleta.plazoleta.domain.model.DishModel;
 import com.plazoleta.plazoleta.plazoleta.domain.model.OrderDishModel;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.out.DishPersistencePort;
+import com.plazoleta.plazoleta.plazoleta.domain.ports.out.EmployeeRestaurantPersistencePort;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.out.OrderPersistencePort;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.out.RestaurantPersistencePort;
 import com.plazoleta.plazoleta.plazoleta.domain.utils.DomainConstants;
@@ -15,15 +16,19 @@ public class OrderHelper {
     private final OrderPersistencePort orderPersistencePort;
     private final DishPersistencePort dishPersistencePort;
     private final RestaurantPersistencePort restaurantPersistencePort;
+    private final EmployeeRestaurantPersistencePort employeeRestaurantPersistencePort;
 
     public OrderHelper(
             OrderPersistencePort orderPersistencePort,
             DishPersistencePort dishPersistencePort,
-            RestaurantPersistencePort restaurantPersistencePort
+            RestaurantPersistencePort restaurantPersistencePort,
+            EmployeeRestaurantPersistencePort employeeRestaurantPersistencePort
     ) {
         this.orderPersistencePort = orderPersistencePort;
         this.dishPersistencePort = dishPersistencePort;
         this.restaurantPersistencePort = restaurantPersistencePort;
+        this.employeeRestaurantPersistencePort = employeeRestaurantPersistencePort;
+
     }
 
     public void validateRole(String role) {
@@ -61,4 +66,10 @@ public class OrderHelper {
             }
         }
     }
+
+    public Long getRestaurantIdByEmployeeId(Long employeeId) {
+        return employeeRestaurantPersistencePort.getRestaurantIdByEmployeeId(employeeId)
+                .orElseThrow(ForbiddenException::new);
+    }
+
 }
