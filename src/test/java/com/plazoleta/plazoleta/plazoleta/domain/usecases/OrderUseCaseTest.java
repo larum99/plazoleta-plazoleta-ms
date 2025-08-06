@@ -1,12 +1,7 @@
 package com.plazoleta.plazoleta.plazoleta.domain.usecases;
 
 import com.plazoleta.plazoleta.plazoleta.domain.criteria.OrderListCriteria;
-import com.plazoleta.plazoleta.plazoleta.domain.exceptions.ClientHasActiveOrderException;
-import com.plazoleta.plazoleta.plazoleta.domain.exceptions.DishDoesNotBelongToRestaurantException;
-import com.plazoleta.plazoleta.plazoleta.domain.exceptions.DishNotFoundException;
-import com.plazoleta.plazoleta.plazoleta.domain.exceptions.MissingFieldException;
-import com.plazoleta.plazoleta.plazoleta.domain.exceptions.RestaurantNotFoundException;
-import com.plazoleta.plazoleta.plazoleta.domain.exceptions.UnauthorizedUserException;
+import com.plazoleta.plazoleta.plazoleta.domain.exceptions.*;
 import com.plazoleta.plazoleta.plazoleta.domain.helpers.OrderHelper;
 import com.plazoleta.plazoleta.plazoleta.domain.model.DishModel;
 import com.plazoleta.plazoleta.plazoleta.domain.model.OrderDishModel;
@@ -206,4 +201,81 @@ class OrderUseCaseTest {
         assertEquals(size, usedCriteria.getSize());
     }
 
+    @Test
+    void assignOrderAndChangeStatus_withValidData_shouldUpdateOrder() {
+        Long orderId = 1L;
+        String newStatus = "EN_PREPARACION";
+
+        OrderModel order = new OrderModel();
+        order.setId(orderId);
+        order.setStatus(OrderStatus.PENDIENTE);
+
+        when(orderPersistencePort.getOrderById(orderId)).thenReturn(java.util.Optional.of(order));
+        doNothing().when(orderHelper).validateEmployeeRole(OWNER_ROLE);
+        doNothing().when(orderHelper).validateEmployeeCanAssignOrder(order, EMPLOYEE_ID);
+        doNothing().when(orderHelper).validateOrderNotAssigned(order);
+        doNothing().when(orderHelper).validateOrderIsPending(order);
+        doNothing().when(orderHelper).validateNewStatusIsInPreparation(newStatus);
+
+        orderUseCase.assignOrderAndChangeStatus(orderId, EMPLOYEE_ID, OWNER_ROLE, newStatus);
+
+        assertEquals(OrderStatus.EN_PREPARACION, order.getStatus());
+        assertEquals(EMPLOYEE_ID, order.getAssignedEmployeeId());
+
+        verify(orderPersistencePort).saveOrder(order);
+    }
+
+    @Test
+    void assignOrderAndChangeStatus_orderNotFound_shouldThrowException() {
+        Long orderId = 999L;
+        String newStatus = "EN_PREPARACION";
+
+        doNothing().when(orderHelper).validateEmployeeRole(anyString());
+        when(orderPersistencePort.getOrderById(orderId)).thenReturn(java.util.Optional.empty());
+
+        assertThrows(OrderNotFoundException.class,
+                () -> orderUseCase.assignOrderAndChangeStatus(orderId, EMPLOYEE_ID, OWNER_ROLE, newStatus));
+
+        verify(orderPersistencePort, never()).saveOrder(any());
+    }
+
+    @Test
+    void assignOrderAndChangeStatus_orderAlreadyAssigned_shouldThrowException() {
+        Long orderId = 1L;
+        String newStatus = "EN_PREPARACION";
+
+        OrderModel order = new OrderModel();
+        order.setId(orderId);
+        order.setStatus(OrderStatus.PENDIENTE);
+
+        when(orderPersistencePort.getOrderById(orderId)).thenReturn(java.util.Optional.of(order));
+        doNothing().when(orderHelper).validateEmployeeRole(anyString());
+        doThrow(IllegalStateException.class).when(orderHelper).validateOrderNotAssigned(order);
+
+        assertThrows(IllegalStateException.class,
+                () -> orderUseCase.assignOrderAndChangeStatus(orderId, EMPLOYEE_ID, OWNER_ROLE, newStatus));
+
+        verify(orderPersistencePort, never()).saveOrder(any());
+    }
+
+    @Test
+    void assignOrderAndChangeStatus_invalidStatus_shouldThrowException() {
+        Long orderId = 1L;
+        String invalidStatus = "CANCELADO";
+
+        OrderModel order = new OrderModel();
+        order.setId(orderId);
+        order.setStatus(OrderStatus.PENDIENTE);
+
+        when(orderPersistencePort.getOrderById(orderId)).thenReturn(java.util.Optional.of(order));
+        doNothing().when(orderHelper).validateEmployeeRole(anyString());
+        doNothing().when(orderHelper).validateOrderNotAssigned(order);
+        doNothing().when(orderHelper).validateOrderIsPending(order);
+        doThrow(IllegalArgumentException.class).when(orderHelper).validateNewStatusIsInPreparation(invalidStatus);
+
+        assertThrows(IllegalArgumentException.class,
+                () -> orderUseCase.assignOrderAndChangeStatus(orderId, EMPLOYEE_ID, OWNER_ROLE, invalidStatus));
+
+        verify(orderPersistencePort, never()).saveOrder(any());
+    }
 }

@@ -10,4 +10,6 @@ public interface OrderPersistencePort {
     void saveOrder(OrderModel orderModel);
     Optional<OrderModel> getActiveOrderByClientId(Long clientId);
     PageResult<OrderModel> getOrdersByCriteria(OrderListCriteria criteria);
+    Optional<OrderModel> getOrderById(Long orderId);
+    void updateOrder(OrderModel orderModel);
 }

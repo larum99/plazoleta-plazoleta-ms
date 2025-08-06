@@ -3,11 +3,13 @@ package com.plazoleta.plazoleta.plazoleta.domain.helpers;
 import com.plazoleta.plazoleta.plazoleta.domain.exceptions.*;
 import com.plazoleta.plazoleta.plazoleta.domain.model.DishModel;
 import com.plazoleta.plazoleta.plazoleta.domain.model.OrderDishModel;
+import com.plazoleta.plazoleta.plazoleta.domain.model.OrderModel;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.out.DishPersistencePort;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.out.EmployeeRestaurantPersistencePort;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.out.OrderPersistencePort;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.out.RestaurantPersistencePort;
 import com.plazoleta.plazoleta.plazoleta.domain.utils.DomainConstants;
+import com.plazoleta.plazoleta.plazoleta.domain.utils.OrderStatus;
 
 import java.util.List;
 
@@ -70,6 +72,37 @@ public class OrderHelper {
     public Long getRestaurantIdByEmployeeId(Long employeeId) {
         return employeeRestaurantPersistencePort.getRestaurantIdByEmployeeId(employeeId)
                 .orElseThrow(ForbiddenException::new);
+    }
+
+    public void validateEmployeeRole(String role) {
+        if (!DomainConstants.ROLE_EMPLOYEE.equalsIgnoreCase(role)) {
+            throw new UnauthorizedUserException();
+        }
+    }
+
+    public void validateEmployeeCanAssignOrder(OrderModel order, Long employeeId) {
+        Long restaurantIdOfEmployee = getRestaurantIdByEmployeeId(employeeId);
+        if (!restaurantIdOfEmployee.equals(order.getRestaurant().getId())) {
+            throw new InvalidRestaurantAssignmentException();
+        }
+    }
+
+    public void validateOrderNotAssigned(OrderModel order) {
+        if (order.getAssignedEmployeeId() != null) {
+            throw new OrderAlreadyAssignedException();
+        }
+    }
+
+    public void validateOrderIsPending(OrderModel order) {
+        if (!OrderStatus.PENDIENTE.equals(order.getStatus())) {
+            throw new InvalidOrderStatusException();
+        }
+    }
+
+    public void validateNewStatusIsInPreparation(String status) {
+        if (!OrderStatus.EN_PREPARACION.name().equalsIgnoreCase(status)) {
+            throw new InvalidOrderStatusException();
+        }
     }
 
 }

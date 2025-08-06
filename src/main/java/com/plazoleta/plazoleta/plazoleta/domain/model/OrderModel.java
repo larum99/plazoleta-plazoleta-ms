@@ -13,18 +13,20 @@ public class OrderModel {
     private List<OrderDishModel> dishes;
     private OrderStatus status;
     private LocalDateTime date;
+    private Long assignedEmployeeId;
 
     public OrderModel() {
     }
 
     public OrderModel(Long id, Long clientId, RestaurantModel restaurant, List<OrderDishModel> dishes,
-                      OrderStatus status, LocalDateTime date) {
+                      OrderStatus status, LocalDateTime date, Long assignedEmployeeId) {
         this.id = id;
         this.clientId = clientId;
         this.restaurant = restaurant;
         this.dishes = dishes;
         this.status = status;
         this.date = date;
+        this.assignedEmployeeId = assignedEmployeeId;
     }
 
     public Long getId() {
@@ -73,5 +75,13 @@ public class OrderModel {
 
     public void setDate(LocalDateTime date) {
         this.date = date;
+    }
+
+    public Long getAssignedEmployeeId() {
+        return assignedEmployeeId;
+    }
+
+    public void setAssignedEmployeeId(Long assignedEmployeeId) {
+        this.assignedEmployeeId = assignedEmployeeId;
     }
 }

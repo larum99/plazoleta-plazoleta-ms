@@ -3,9 +3,11 @@ package com.plazoleta.plazoleta.plazoleta.application.services.impl;
 import com.plazoleta.plazoleta.commons.configurations.utils.Constants;
 import com.plazoleta.plazoleta.plazoleta.application.dto.request.CreateOrderRequest;
 import com.plazoleta.plazoleta.plazoleta.application.dto.request.ListOrderRequest;
+import com.plazoleta.plazoleta.plazoleta.application.dto.request.UpdateOrderRequest;
 import com.plazoleta.plazoleta.plazoleta.application.dto.response.CreateOrderResponse;
 import com.plazoleta.plazoleta.plazoleta.application.dto.response.OrderResponse;
 import com.plazoleta.plazoleta.plazoleta.application.dto.response.PagedOrderResponse;
+import com.plazoleta.plazoleta.plazoleta.application.dto.response.UpdateOrderStatusResponse;
 import com.plazoleta.plazoleta.plazoleta.application.mappers.OrderCriteriaMapper;
 import com.plazoleta.plazoleta.plazoleta.application.mappers.OrderDtoMapper;
 import com.plazoleta.plazoleta.plazoleta.application.services.OrderService;
@@ -65,5 +67,14 @@ public class OrderServiceImpl implements OrderService {
                 result.isFirst(),
                 result.isLast()
         );
+    }
+
+    @Override
+    public UpdateOrderStatusResponse updateOrderStatus(Long orderId, UpdateOrderRequest request, String token) {
+        String role = roleValidatorPort.extractRole(token);
+
+        orderServicePort.assignOrderAndChangeStatus(orderId, request.employeeId(), role, request.status());
+
+        return new UpdateOrderStatusResponse(Constants.UPDATE_ORDER_STATUS_SUCCESS_MESSAGE, LocalDateTime.now());
     }
 }

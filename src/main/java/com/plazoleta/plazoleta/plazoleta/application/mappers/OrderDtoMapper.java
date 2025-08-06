@@ -14,10 +14,11 @@ import java.util.List;
 
 @Mapper(componentModel = "spring",
 
-        unmappedTargetPolicy = ReportingPolicy.WARN
+        unmappedTargetPolicy = ReportingPolicy.IGNORE
 )
 public interface OrderDtoMapper {
 
+    @Mapping(target = "restaurant.id", source = "restaurantId")
     OrderModel toOrderModelFromCreateRequest(CreateOrderRequest request);
 
     @Mapping(target = "dish.id", source = "dishId")

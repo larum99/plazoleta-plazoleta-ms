@@ -3,8 +3,10 @@ package com.plazoleta.plazoleta.plazoleta.infrastructure.endpoints.rest;
 import com.plazoleta.plazoleta.commons.configurations.swagger.docs.OrderControllerDocs.*;
 import com.plazoleta.plazoleta.plazoleta.application.dto.request.CreateOrderRequest;
 import com.plazoleta.plazoleta.plazoleta.application.dto.request.ListOrderRequest;
+import com.plazoleta.plazoleta.plazoleta.application.dto.request.UpdateOrderRequest;
 import com.plazoleta.plazoleta.plazoleta.application.dto.response.CreateOrderResponse;
 import com.plazoleta.plazoleta.plazoleta.application.dto.response.PagedOrderResponse;
+import com.plazoleta.plazoleta.plazoleta.application.dto.response.UpdateOrderStatusResponse;
 import com.plazoleta.plazoleta.plazoleta.application.services.OrderService;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.utils.constants.ControllerConstants;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +35,7 @@ public class OrderController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
+    @ListOrdersDocs
     @GetMapping(ControllerConstants.LIST_ORDERS_PATH)
     @PreAuthorize(ControllerConstants.ROLE_EMPLOYEE)
     public ResponseEntity<PagedOrderResponse> getOrdersByCriteria(
@@ -46,4 +49,18 @@ public class OrderController {
         PagedOrderResponse response = orderService.listOrdersByRestaurant(request, token);
         return ResponseEntity.ok(response);
     }
+
+    @UpdateOrderDocs
+    @PutMapping(ControllerConstants.UPDATE_ORDER_STATUS_PATH)
+    @PreAuthorize(ControllerConstants.ROLE_EMPLOYEE)
+    public ResponseEntity<UpdateOrderStatusResponse> updateOrderStatus(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
+            @PathVariable Long orderId,
+            @RequestBody UpdateOrderRequest request
+    ) {
+        String token = authorizationHeader.replace(ControllerConstants.BEARER_PREFIX, "");
+        UpdateOrderStatusResponse response = orderService.updateOrderStatus(orderId, request, token);
+        return ResponseEntity.ok(response);
+    }
+
 }

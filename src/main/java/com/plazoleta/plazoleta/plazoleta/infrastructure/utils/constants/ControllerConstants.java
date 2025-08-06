@@ -38,4 +38,6 @@ public class ControllerConstants {
     public static final String LIST_ORDERS_PATH = "/orders";
 
     public static final String ROLE_EMPLOYEE = "hasRole('EMPLEADO')";
+
+    public static final String UPDATE_ORDER_STATUS_PATH = "/{orderId}/status";
 }

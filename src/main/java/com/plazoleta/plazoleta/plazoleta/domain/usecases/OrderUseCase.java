@@ -1,6 +1,7 @@
 package com.plazoleta.plazoleta.plazoleta.domain.usecases;
 
 import com.plazoleta.plazoleta.plazoleta.domain.criteria.OrderListCriteria;
+import com.plazoleta.plazoleta.plazoleta.domain.exceptions.OrderNotFoundException;
 import com.plazoleta.plazoleta.plazoleta.domain.helpers.OrderHelper;
 import com.plazoleta.plazoleta.plazoleta.domain.model.OrderModel;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.in.OrderServicePort;
@@ -48,6 +49,8 @@ public class OrderUseCase implements OrderServicePort {
 
     @Override
     public PageResult<OrderModel> listOrders(OrderListCriteria criteria, String role, Long employeeId) {
+        orderHelper.validateEmployeeRole(role);
+
         Long restaurantId = orderHelper.getRestaurantIdByEmployeeId(employeeId);
         criteria = new OrderListCriteria(
                 restaurantId,
@@ -56,5 +59,23 @@ public class OrderUseCase implements OrderServicePort {
                 criteria.getSize()
         );
         return orderPersistencePort.getOrdersByCriteria(criteria);
+    }
+
+    @Override
+    public void assignOrderAndChangeStatus(Long orderId, Long employeeId, String role, String status) {
+        orderHelper.validateEmployeeRole(role);
+
+        OrderModel order = orderPersistencePort.getOrderById(orderId)
+                .orElseThrow(OrderNotFoundException::new);
+
+        orderHelper.validateEmployeeCanAssignOrder(order, employeeId);
+        orderHelper.validateOrderNotAssigned(order);
+        orderHelper.validateOrderIsPending(order);
+        orderHelper.validateNewStatusIsInPreparation(status);
+
+        order.setAssignedEmployeeId(employeeId);
+        order.setStatus(OrderStatus.EN_PREPARACION);
+
+        orderPersistencePort.saveOrder(order);
     }
 }

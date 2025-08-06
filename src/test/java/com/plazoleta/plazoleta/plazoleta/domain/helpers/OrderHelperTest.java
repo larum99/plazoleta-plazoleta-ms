@@ -11,6 +11,7 @@ import com.plazoleta.plazoleta.plazoleta.domain.ports.out.OrderPersistencePort;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.out.RestaurantPersistencePort;
 import com.plazoleta.plazoleta.plazoleta.domain.utils.DomainConstants;
 
+import com.plazoleta.plazoleta.plazoleta.domain.utils.OrderStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -164,5 +165,90 @@ class OrderHelperTest {
                 .thenReturn(Optional.empty());
 
         assertThrows(ForbiddenException.class, () -> orderHelper.getRestaurantIdByEmployeeId(EMPLOYEE_ID));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"EMPLEADO", "empleado"})
+    void validateEmployeeRole_withValidRole_shouldNotThrow(String role) {
+        assertDoesNotThrow(() -> orderHelper.validateEmployeeRole(role));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"CLIENTE", "ADMINISTRADOR", "PROPIETARIO", "INVALIDO"})
+    void validateEmployeeRole_withInvalidRole_shouldThrowUnauthorizedUserException(String role) {
+        assertThrows(UnauthorizedUserException.class, () -> orderHelper.validateEmployeeRole(role));
+    }
+
+    @Test
+    void validateEmployeeCanAssignOrder_withMatchingRestaurant_shouldNotThrow() {
+        OrderModel order = new OrderModel();
+        RestaurantModel restaurant = new RestaurantModel();
+        restaurant.setId(RESTAURANT_ID);
+        order.setRestaurant(restaurant);
+
+        when(employeeRestaurantPersistencePort.getRestaurantIdByEmployeeId(EMPLOYEE_ID))
+                .thenReturn(Optional.of(RESTAURANT_ID));
+
+        assertDoesNotThrow(() -> orderHelper.validateEmployeeCanAssignOrder(order, EMPLOYEE_ID));
+    }
+
+    @Test
+    void validateEmployeeCanAssignOrder_withDifferentRestaurant_shouldThrowInvalidRestaurantAssignmentException() {
+        OrderModel order = new OrderModel();
+        RestaurantModel restaurant = new RestaurantModel();
+        restaurant.setId(RESTAURANT_ID);
+        order.setRestaurant(restaurant);
+
+        when(employeeRestaurantPersistencePort.getRestaurantIdByEmployeeId(EMPLOYEE_ID))
+                .thenReturn(Optional.of(ANOTHER_RESTAURANT_ID));
+
+        assertThrows(InvalidRestaurantAssignmentException.class,
+                () -> orderHelper.validateEmployeeCanAssignOrder(order, EMPLOYEE_ID));
+    }
+
+    @Test
+    void validateOrderNotAssigned_whenOrderAlreadyAssigned_shouldThrowOrderAlreadyAssignedException() {
+        OrderModel order = new OrderModel();
+        order.setAssignedEmployeeId(EMPLOYEE_ID);
+
+        assertThrows(OrderAlreadyAssignedException.class, () -> orderHelper.validateOrderNotAssigned(order));
+    }
+
+    @Test
+    void validateOrderNotAssigned_whenOrderIsNotAssigned_shouldNotThrow() {
+        OrderModel order = new OrderModel();
+        order.setAssignedEmployeeId(null);
+
+        assertDoesNotThrow(() -> orderHelper.validateOrderNotAssigned(order));
+    }
+
+    @Test
+    void validateOrderIsPending_whenStatusIsNotPending_shouldThrowInvalidOrderStatusException() {
+        OrderModel order = new OrderModel();
+        order.setStatus(OrderStatus.EN_PREPARACION);
+
+        assertThrows(InvalidOrderStatusException.class, () -> orderHelper.validateOrderIsPending(order));
+    }
+
+    @Test
+    void validateOrderIsPending_whenStatusIsPending_shouldNotThrow() {
+        OrderModel order = new OrderModel();
+        order.setStatus(OrderStatus.PENDIENTE);
+
+        assertDoesNotThrow(() -> orderHelper.validateOrderIsPending(order));
+    }
+
+    @Test
+    void validateNewStatusIsInPreparation_whenStatusIsInvalid_shouldThrowInvalidOrderStatusException() {
+        String invalidStatus = "ENTREGADO";
+
+        assertThrows(InvalidOrderStatusException.class, () -> orderHelper.validateNewStatusIsInPreparation(invalidStatus));
+    }
+
+    @Test
+    void validateNewStatusIsInPreparation_withValidStatus_shouldNotThrow() {
+        String validStatus = "EN_PREPARACION";
+
+        assertDoesNotThrow(() -> orderHelper.validateNewStatusIsInPreparation(validStatus));
     }
 }

@@ -15,8 +15,7 @@ public class SecurityConstants {
             "/swagger-ui/**",
             "/swagger-ui.html",
             "/v3/api-docs/**",
-            "/v3/api-docs",
-            "/api/v1/plazoleta/**"
+            "/v3/api-docs"
     };
 
     public static final String RESTAURANT_PROTECTED_PATH = "/api/v1/plazoleta/restaurant";
