@@ -89,8 +89,10 @@ public class OrderUseCase implements OrderServicePort {
         orderHelper.validateOrderIsInPreparation(order);
 
         order.setStatus(OrderStatus.LISTO);
-        orderPersistencePort.updateOrder(order);
 
-        orderNotificationPort.notifyClientOrderReady(order);
+        String code = orderNotificationPort.notifyClientOrderReady(order);
+        order.setVerificationCode(code);
+
+        orderPersistencePort.updateOrder(order);
     }
 }

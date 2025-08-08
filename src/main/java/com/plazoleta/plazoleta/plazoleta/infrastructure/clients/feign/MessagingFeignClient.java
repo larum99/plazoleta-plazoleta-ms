@@ -1,6 +1,7 @@
 package com.plazoleta.plazoleta.plazoleta.infrastructure.clients.feign;
 
 import com.plazoleta.plazoleta.plazoleta.infrastructure.clients.feign.dto.request.PhoneNumberRequest;
+import com.plazoleta.plazoleta.plazoleta.infrastructure.clients.feign.dto.response.CodeVerificationResponse;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.utils.constants.FeignConstants;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface MessagingFeignClient {
 
     @PostMapping(FeignConstants.SEND_ORDER_READY_MESSAGE_PATH)
-    void sendOrderReadyMessage(@RequestBody PhoneNumberRequest request);
+    CodeVerificationResponse sendOrderReadyMessage(@RequestBody PhoneNumberRequest request);
+
 
 }

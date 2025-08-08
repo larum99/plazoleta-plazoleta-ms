@@ -34,6 +34,9 @@ public class OrderEntity {
     @Column(name = "assigned_employee_id")
     private Long assignedEmployeeId;
 
+    @Column(name = "verification_code", length = 10)
+    private String verificationCode;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderDishEntity> dishes;
 }

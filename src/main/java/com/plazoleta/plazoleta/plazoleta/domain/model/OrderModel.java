@@ -14,12 +14,13 @@ public class OrderModel {
     private OrderStatus status;
     private LocalDateTime date;
     private Long assignedEmployeeId;
+    private String verificationCode;
 
     public OrderModel() {
     }
 
     public OrderModel(Long id, Long clientId, RestaurantModel restaurant, List<OrderDishModel> dishes,
-                      OrderStatus status, LocalDateTime date, Long assignedEmployeeId) {
+                      OrderStatus status, LocalDateTime date, Long assignedEmployeeId, String verificationCode) {
         this.id = id;
         this.clientId = clientId;
         this.restaurant = restaurant;
@@ -27,6 +28,7 @@ public class OrderModel {
         this.status = status;
         this.date = date;
         this.assignedEmployeeId = assignedEmployeeId;
+        this.verificationCode = verificationCode;
     }
 
     public Long getId() {
@@ -83,5 +85,13 @@ public class OrderModel {
 
     public void setAssignedEmployeeId(Long assignedEmployeeId) {
         this.assignedEmployeeId = assignedEmployeeId;
+    }
+
+    public String getVerificationCode() {
+        return verificationCode;
+    }
+
+    public void setVerificationCode(String verificationCode) {
+        this.verificationCode = verificationCode;
     }
 }

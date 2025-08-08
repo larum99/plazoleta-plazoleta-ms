@@ -18,9 +18,11 @@ import java.util.Optional;
 public interface OrderEntityMapper {
 
     @Mapping(source = "createdAt", target = "date")
+    @Mapping(source = "verificationCode", target = "verificationCode")
     OrderModel entityToModel(OrderEntity entity);
 
     @Mapping(source = "date", target = "createdAt")
+    @Mapping(source = "verificationCode", target = "verificationCode")
     OrderEntity modelToEntity(OrderModel model);
 
     default OrderModel optionalEntityToModel(Optional<OrderEntity> optionalEntity) {
