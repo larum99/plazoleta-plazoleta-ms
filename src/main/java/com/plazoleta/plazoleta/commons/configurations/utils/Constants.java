@@ -11,6 +11,7 @@ public class Constants {
     public static final String UPDATE_DISH_STATUS_SUCCESS_MESSAGE = "Estado del plato actualizado correctamente";
     public static final String CREATE_ORDER_SUCCESS_MESSAGE = "Pedido creado exitosamente.";
     public static final String EMPLOYEE_ASSIGNMENT_SUCCESS_MESSAGE = "Empleado asignado correctamente al restaurante";
-    public static final String UPDATE_ORDER_STATUS_SUCCESS_MESSAGE = "El pedido fue asignado correctamente y cambiado a estado EN_PREPARATION";
-
+    public static final String UPDATE_ORDER_STATUS_SUCCESS_MESSAGE = "El pedido fue actualizado con éxito.";
+    public static final String ERROR_UNSUPPORTED_ORDER_STATUS = "Estado de orden no soportado: ";
+    public static final String ERROR_INVALID_ORDER_STATUS = "Estado de orden inválido: ";
 }

@@ -8,5 +8,6 @@ public interface OrderServicePort {
     void createOrder(OrderModel orderModel, Long clientId, String role);
     PageResult<OrderModel> listOrders(OrderListCriteria criteria, String role, Long employeeId);
     void assignOrderAndChangeStatus(Long orderId, Long employeeId, String role, String status);
+    void markOrderAsReady(Long orderId, Long employeeId, String role);
 
 }

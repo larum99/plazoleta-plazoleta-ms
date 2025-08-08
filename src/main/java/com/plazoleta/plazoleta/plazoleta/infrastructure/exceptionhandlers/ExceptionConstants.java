@@ -24,4 +24,8 @@ public class ExceptionConstants {
     public static final String DISH_NOT_BELONG_RESTAURANT_MESSAGE = "El plato no pertenece al restaurante especificado.";
     public static final String EMPLOYEE_ALREADY_ASSIGNED_MESSAGE = "El empleado ya está asignado a un restaurante.";
     public static final String INVALID_EMPLOYEE_MESSAGE = "El ID del empleado no es válido o no corresponde a un usuario con rol EMPLEADO.";
+    public static final String INVALID_RESTAURANT_ASSIGNMENT_MESSAGE = "El empleado no pertenece al restaurante de la orden.";
+    public static final String ORDER_ALREADY_ASSIGNED_MESSAGE = "La orden ya ha sido asignada a un empleado.";
+    public static final String INVALID_ORDER_STATUS_MESSAGE = "El estado de la orden no es válido para esta operación.";
+    public static final String UNAUTHORIZED_ORDER_ACCESS_MESSAGE = "No tienes permisos para acceder a esta orden.";
 }

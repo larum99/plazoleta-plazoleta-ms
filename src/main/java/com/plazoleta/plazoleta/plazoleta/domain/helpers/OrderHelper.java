@@ -105,4 +105,16 @@ public class OrderHelper {
         }
     }
 
+    public void validateEmployeeAssignedToOrder(OrderModel order, Long employeeId) {
+        if (!employeeId.equals(order.getAssignedEmployeeId())) {
+            throw new UnauthorizedOrderAccessException();
+        }
+    }
+
+    public void validateOrderIsInPreparation(OrderModel order) {
+        if (!OrderStatus.EN_PREPARACION.equals(order.getStatus())) {
+            throw new InvalidOrderStatusException();
+        }
+    }
+
 }

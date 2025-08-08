@@ -10,8 +10,10 @@ import com.plazoleta.plazoleta.plazoleta.domain.usecases.EmployeeRestaurantUseCa
 import com.plazoleta.plazoleta.plazoleta.domain.usecases.OrderUseCase;
 import com.plazoleta.plazoleta.plazoleta.domain.usecases.RestaurantUseCase;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.adapters.feign.UserValidationAdapter;
+import com.plazoleta.plazoleta.plazoleta.infrastructure.adapters.messaging.OrderNotificationAdapter;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.adapters.persistence.*;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.adapters.security.RoleValidatorAdapter;
+import com.plazoleta.plazoleta.plazoleta.infrastructure.clients.feign.MessagingFeignClient;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.clients.feign.UserFeignClient;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.mappers.*;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.repositories.mysql.*;
@@ -35,6 +37,7 @@ public class BeansConfiguration {
     private final OrderRepository orderRepository;
     private final OrderEntityMapper orderEntityMapper;
 
+    private final MessagingFeignClient messagingFeignClient;
     private final UserFeignClient userFeignClient;
 
     private final EmployeeRestaurantRepository employeeRestaurantRepository;
@@ -97,7 +100,8 @@ public class BeansConfiguration {
                 orderPersistencePort(),
                 dishPersistencePort(),
                 restaurantPersistencePort(),
-                employeeRestaurantPersistencePort()
+                employeeRestaurantPersistencePort(),
+                orderNotificationPort()
         );
     }
 
@@ -123,4 +127,10 @@ public class BeansConfiguration {
                 userValidationPort()
         );
     }
+
+    @Bean
+    public OrderNotificationPort orderNotificationPort() {
+        return new OrderNotificationAdapter(messagingFeignClient, userFeignClient);
+    }
+
 }

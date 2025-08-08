@@ -19,10 +19,14 @@ public class EmployeeRestaurantServiceImpl implements EmployeeRestaurantService 
     private final RoleValidatorPort roleValidatorPort;
 
     @Override
-    public void assignEmployeeToRestaurant(CreateEmployeeRestaurantRequest request, String token) {
+    public CreateEmployeeRestaurantResponse assignEmployeeToRestaurant(CreateEmployeeRestaurantRequest request, String token) {
         Long id = roleValidatorPort.extractUserId(token);
         String role = roleValidatorPort.extractRole(token);
         employeeRestaurantServicePort.assignEmployeeToRestaurant(request.employeeId(), request.restaurantId(), id, role);
-    }
 
+        return new CreateEmployeeRestaurantResponse(
+                Constants.EMPLOYEE_ASSIGNMENT_SUCCESS_MESSAGE,
+                LocalDateTime.now()
+        );
+    }
 }

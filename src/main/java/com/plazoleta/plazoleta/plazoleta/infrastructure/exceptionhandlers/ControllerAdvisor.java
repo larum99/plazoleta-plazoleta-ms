@@ -122,4 +122,28 @@ public class ControllerAdvisor {
                 ExceptionConstants.INVALID_EMPLOYEE_MESSAGE, LocalDateTime.now()));
     }
 
+    @ExceptionHandler(InvalidRestaurantAssignmentException.class)
+    public ResponseEntity<ExceptionResponse> handleInvalidRestaurantAssignment(InvalidRestaurantAssignmentException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ExceptionResponse(
+                ExceptionConstants.INVALID_RESTAURANT_ASSIGNMENT_MESSAGE, LocalDateTime.now()));
+    }
+
+    @ExceptionHandler(OrderAlreadyAssignedException.class)
+    public ResponseEntity<ExceptionResponse> handleOrderAlreadyAssigned(OrderAlreadyAssignedException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ExceptionResponse(
+                ExceptionConstants.ORDER_ALREADY_ASSIGNED_MESSAGE, LocalDateTime.now()));
+    }
+
+    @ExceptionHandler(InvalidOrderStatusException.class)
+    public ResponseEntity<ExceptionResponse> handleInvalidOrderStatus(InvalidOrderStatusException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ExceptionResponse(
+                ExceptionConstants.INVALID_ORDER_STATUS_MESSAGE, LocalDateTime.now()));
+    }
+
+    @ExceptionHandler(UnauthorizedOrderAccessException.class)
+    public ResponseEntity<ExceptionResponse> handleUnauthorizedOrderAccess(UnauthorizedOrderAccessException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ExceptionResponse(
+                ExceptionConstants.UNAUTHORIZED_ORDER_ACCESS_MESSAGE, LocalDateTime.now()));
+    }
+
 }

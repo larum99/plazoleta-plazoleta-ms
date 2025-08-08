@@ -7,9 +7,7 @@ import com.plazoleta.plazoleta.plazoleta.domain.model.DishModel;
 import com.plazoleta.plazoleta.plazoleta.domain.model.OrderDishModel;
 import com.plazoleta.plazoleta.plazoleta.domain.model.OrderModel;
 import com.plazoleta.plazoleta.plazoleta.domain.model.RestaurantModel;
-import com.plazoleta.plazoleta.plazoleta.domain.ports.out.DishPersistencePort;
-import com.plazoleta.plazoleta.plazoleta.domain.ports.out.OrderPersistencePort;
-import com.plazoleta.plazoleta.plazoleta.domain.ports.out.RestaurantPersistencePort;
+import com.plazoleta.plazoleta.plazoleta.domain.ports.out.*;
 import com.plazoleta.plazoleta.plazoleta.domain.utils.OrderStatus;
 import com.plazoleta.plazoleta.plazoleta.domain.utils.PageResult;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,6 +21,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -40,6 +39,10 @@ class OrderUseCaseTest {
     @Mock
     private RestaurantPersistencePort restaurantPersistencePort;
     @Mock
+    private EmployeeRestaurantPersistencePort employeeRestaurantPersistencePort;
+    @Mock
+    private OrderNotificationPort orderNotificationPort;
+    @Mock
     private OrderHelper orderHelper;
 
     @InjectMocks
@@ -50,7 +53,7 @@ class OrderUseCaseTest {
     private static final Long RESTAURANT_ID = 10L;
     private static final Long DISH_ID = 100L;
     private static final String CLIENT_ROLE = "CLIENTE";
-    private static final String OWNER_ROLE = "PROPIETARIO";
+    private static final String EMPLOYEE_ROLE = "EMPLEADO";
 
     private OrderModel validOrder;
     private RestaurantModel restaurantModel;
@@ -74,7 +77,13 @@ class OrderUseCaseTest {
         validOrder.setRestaurant(restaurantModel);
         validOrder.setDishes(List.of(orderDishModel));
 
-        orderUseCase = new OrderUseCase(orderPersistencePort, dishPersistencePort, restaurantPersistencePort, null);
+        orderUseCase = new OrderUseCase(
+                orderPersistencePort,
+                dishPersistencePort,
+                restaurantPersistencePort,
+                employeeRestaurantPersistencePort,
+                orderNotificationPort
+        );
         ReflectionTestUtils.setField(orderUseCase, "orderHelper", orderHelper);
     }
 
@@ -100,8 +109,7 @@ class OrderUseCaseTest {
     void createOrder_withNonClientRole_shouldThrowUnauthorizedUserException() {
         doThrow(UnauthorizedUserException.class).when(orderHelper).validateRole(anyString());
 
-        assertThrows(UnauthorizedUserException.class, () -> orderUseCase.createOrder(validOrder, CLIENT_ID, OWNER_ROLE));
-
+        assertThrows(UnauthorizedUserException.class, () -> orderUseCase.createOrder(validOrder, CLIENT_ID, "PROPIETARIO"));
         verify(orderPersistencePort, never()).saveOrder(any());
     }
 
@@ -111,7 +119,6 @@ class OrderUseCaseTest {
         doThrow(ClientHasActiveOrderException.class).when(orderHelper).validateNoActiveOrder(anyLong());
 
         assertThrows(ClientHasActiveOrderException.class, () -> orderUseCase.createOrder(validOrder, CLIENT_ID, CLIENT_ROLE));
-
         verify(orderPersistencePort, never()).saveOrder(any());
     }
 
@@ -122,7 +129,6 @@ class OrderUseCaseTest {
         doThrow(RestaurantNotFoundException.class).when(orderHelper).validateRestaurantExistence(anyLong());
 
         assertThrows(RestaurantNotFoundException.class, () -> orderUseCase.createOrder(validOrder, CLIENT_ID, CLIENT_ROLE));
-
         verify(orderPersistencePort, never()).saveOrder(any());
     }
 
@@ -134,7 +140,6 @@ class OrderUseCaseTest {
         doThrow(DishNotFoundException.class).when(orderHelper).validateDishesExistAndBelongToSameRestaurant(any(), anyLong());
 
         assertThrows(DishNotFoundException.class, () -> orderUseCase.createOrder(validOrder, CLIENT_ID, CLIENT_ROLE));
-
         verify(orderPersistencePort, never()).saveOrder(any());
     }
 
@@ -146,21 +151,18 @@ class OrderUseCaseTest {
         doThrow(DishDoesNotBelongToRestaurantException.class).when(orderHelper).validateDishesExistAndBelongToSameRestaurant(any(), anyLong());
 
         assertThrows(DishDoesNotBelongToRestaurantException.class, () -> orderUseCase.createOrder(validOrder, CLIENT_ID, CLIENT_ROLE));
-
         verify(orderPersistencePort, never()).saveOrder(any());
     }
 
     @Test
     void createOrder_whenOrderDishesListIsEmpty_shouldThrowMissingFieldException() {
         validOrder.setDishes(Collections.emptyList());
-
         doNothing().when(orderHelper).validateRole(anyString());
         doNothing().when(orderHelper).validateNoActiveOrder(anyLong());
         doNothing().when(orderHelper).validateRestaurantExistence(anyLong());
         doThrow(MissingFieldException.class).when(orderHelper).validateDishesExistAndBelongToSameRestaurant(any(), anyLong());
 
         assertThrows(MissingFieldException.class, () -> orderUseCase.createOrder(validOrder, CLIENT_ID, CLIENT_ROLE));
-
         verify(orderPersistencePort, never()).saveOrder(any());
     }
 
@@ -171,13 +173,7 @@ class OrderUseCaseTest {
         int page = 0;
         int size = 10;
 
-        OrderListCriteria inputCriteria = new OrderListCriteria(
-                null,
-                status,
-                page,
-                size
-        );
-
+        OrderListCriteria inputCriteria = new OrderListCriteria(null, status, page, size);
         PageResult<OrderModel> expectedPageResult = new PageResult<>(
                 List.of(validOrder), 1L, 1, page, size, true, true
         );
@@ -185,7 +181,7 @@ class OrderUseCaseTest {
         when(orderHelper.getRestaurantIdByEmployeeId(EMPLOYEE_ID)).thenReturn(expectedRestaurantId);
         when(orderPersistencePort.getOrdersByCriteria(any(OrderListCriteria.class))).thenReturn(expectedPageResult);
 
-        PageResult<OrderModel> result = orderUseCase.listOrders(inputCriteria, OWNER_ROLE, EMPLOYEE_ID);
+        PageResult<OrderModel> result = orderUseCase.listOrders(inputCriteria, EMPLOYEE_ROLE, EMPLOYEE_ID);
 
         assertNotNull(result);
         assertEquals(1, result.getContent().size());
@@ -210,18 +206,17 @@ class OrderUseCaseTest {
         order.setId(orderId);
         order.setStatus(OrderStatus.PENDIENTE);
 
-        when(orderPersistencePort.getOrderById(orderId)).thenReturn(java.util.Optional.of(order));
-        doNothing().when(orderHelper).validateEmployeeRole(OWNER_ROLE);
+        when(orderPersistencePort.getOrderById(orderId)).thenReturn(Optional.of(order));
+        doNothing().when(orderHelper).validateEmployeeRole(anyString());
         doNothing().when(orderHelper).validateEmployeeCanAssignOrder(order, EMPLOYEE_ID);
         doNothing().when(orderHelper).validateOrderNotAssigned(order);
         doNothing().when(orderHelper).validateOrderIsPending(order);
         doNothing().when(orderHelper).validateNewStatusIsInPreparation(newStatus);
 
-        orderUseCase.assignOrderAndChangeStatus(orderId, EMPLOYEE_ID, OWNER_ROLE, newStatus);
+        orderUseCase.assignOrderAndChangeStatus(orderId, EMPLOYEE_ID, EMPLOYEE_ROLE, newStatus);
 
         assertEquals(OrderStatus.EN_PREPARACION, order.getStatus());
         assertEquals(EMPLOYEE_ID, order.getAssignedEmployeeId());
-
         verify(orderPersistencePort).saveOrder(order);
     }
 
@@ -231,10 +226,10 @@ class OrderUseCaseTest {
         String newStatus = "EN_PREPARACION";
 
         doNothing().when(orderHelper).validateEmployeeRole(anyString());
-        when(orderPersistencePort.getOrderById(orderId)).thenReturn(java.util.Optional.empty());
+        when(orderPersistencePort.getOrderById(orderId)).thenReturn(Optional.empty());
 
         assertThrows(OrderNotFoundException.class,
-                () -> orderUseCase.assignOrderAndChangeStatus(orderId, EMPLOYEE_ID, OWNER_ROLE, newStatus));
+                () -> orderUseCase.assignOrderAndChangeStatus(orderId, EMPLOYEE_ID, EMPLOYEE_ROLE, newStatus));
 
         verify(orderPersistencePort, never()).saveOrder(any());
     }
@@ -247,13 +242,14 @@ class OrderUseCaseTest {
         OrderModel order = new OrderModel();
         order.setId(orderId);
         order.setStatus(OrderStatus.PENDIENTE);
+        order.setAssignedEmployeeId(EMPLOYEE_ID);
 
-        when(orderPersistencePort.getOrderById(orderId)).thenReturn(java.util.Optional.of(order));
+        when(orderPersistencePort.getOrderById(orderId)).thenReturn(Optional.of(order));
         doNothing().when(orderHelper).validateEmployeeRole(anyString());
-        doThrow(IllegalStateException.class).when(orderHelper).validateOrderNotAssigned(order);
+        doThrow(OrderAlreadyAssignedException.class).when(orderHelper).validateOrderNotAssigned(order);
 
-        assertThrows(IllegalStateException.class,
-                () -> orderUseCase.assignOrderAndChangeStatus(orderId, EMPLOYEE_ID, OWNER_ROLE, newStatus));
+        assertThrows(OrderAlreadyAssignedException.class,
+                () -> orderUseCase.assignOrderAndChangeStatus(orderId, EMPLOYEE_ID, EMPLOYEE_ROLE, newStatus));
 
         verify(orderPersistencePort, never()).saveOrder(any());
     }
@@ -267,15 +263,89 @@ class OrderUseCaseTest {
         order.setId(orderId);
         order.setStatus(OrderStatus.PENDIENTE);
 
-        when(orderPersistencePort.getOrderById(orderId)).thenReturn(java.util.Optional.of(order));
+        when(orderPersistencePort.getOrderById(orderId)).thenReturn(Optional.of(order));
         doNothing().when(orderHelper).validateEmployeeRole(anyString());
         doNothing().when(orderHelper).validateOrderNotAssigned(order);
         doNothing().when(orderHelper).validateOrderIsPending(order);
-        doThrow(IllegalArgumentException.class).when(orderHelper).validateNewStatusIsInPreparation(invalidStatus);
+        doThrow(InvalidOrderStatusException.class).when(orderHelper).validateNewStatusIsInPreparation(invalidStatus);
 
-        assertThrows(IllegalArgumentException.class,
-                () -> orderUseCase.assignOrderAndChangeStatus(orderId, EMPLOYEE_ID, OWNER_ROLE, invalidStatus));
+        assertThrows(InvalidOrderStatusException.class,
+                () -> orderUseCase.assignOrderAndChangeStatus(orderId, EMPLOYEE_ID, EMPLOYEE_ROLE, invalidStatus));
 
         verify(orderPersistencePort, never()).saveOrder(any());
+    }
+
+    @Test
+    void markOrderAsReady_withValidData_shouldUpdateOrderStatusAndNotifyClient() {
+        Long orderId = 1L;
+        OrderModel order = new OrderModel();
+        order.setId(orderId);
+        order.setStatus(OrderStatus.EN_PREPARACION);
+        order.setAssignedEmployeeId(EMPLOYEE_ID);
+
+        when(orderPersistencePort.getOrderById(orderId)).thenReturn(Optional.of(order));
+        doNothing().when(orderHelper).validateEmployeeRole(anyString());
+        doNothing().when(orderHelper).validateEmployeeAssignedToOrder(order, EMPLOYEE_ID);
+        doNothing().when(orderHelper).validateOrderIsInPreparation(order);
+
+        orderUseCase.markOrderAsReady(orderId, EMPLOYEE_ID, EMPLOYEE_ROLE);
+
+        assertEquals(OrderStatus.LISTO, order.getStatus());
+        verify(orderPersistencePort).updateOrder(order);
+        verify(orderNotificationPort).notifyClientOrderReady(order);
+    }
+
+    @Test
+    void markOrderAsReady_orderNotFound_shouldThrowException() {
+        Long orderId = 999L;
+
+        when(orderPersistencePort.getOrderById(orderId)).thenReturn(Optional.empty());
+        doNothing().when(orderHelper).validateEmployeeRole(anyString());
+
+        assertThrows(OrderNotFoundException.class,
+                () -> orderUseCase.markOrderAsReady(orderId, EMPLOYEE_ID, EMPLOYEE_ROLE));
+
+        verify(orderPersistencePort, never()).updateOrder(any());
+        verify(orderNotificationPort, never()).notifyClientOrderReady(any());
+    }
+
+    @Test
+    void markOrderAsReady_employeeNotAssigned_shouldThrowException() {
+        Long orderId = 1L;
+        Long otherEmployeeId = 99L;
+        OrderModel order = new OrderModel();
+        order.setId(orderId);
+        order.setStatus(OrderStatus.EN_PREPARACION);
+        order.setAssignedEmployeeId(otherEmployeeId);
+
+        when(orderPersistencePort.getOrderById(orderId)).thenReturn(Optional.of(order));
+        doNothing().when(orderHelper).validateEmployeeRole(anyString());
+        doThrow(UnauthorizedOrderAccessException.class).when(orderHelper).validateEmployeeAssignedToOrder(order, EMPLOYEE_ID);
+
+        assertThrows(UnauthorizedOrderAccessException.class,
+                () -> orderUseCase.markOrderAsReady(orderId, EMPLOYEE_ID, EMPLOYEE_ROLE));
+
+        verify(orderPersistencePort, never()).updateOrder(any());
+        verify(orderNotificationPort, never()).notifyClientOrderReady(any());
+    }
+
+    @Test
+    void markOrderAsReady_orderNotInPreparation_shouldThrowException() {
+        Long orderId = 1L;
+        OrderModel order = new OrderModel();
+        order.setId(orderId);
+        order.setStatus(OrderStatus.PENDIENTE);
+        order.setAssignedEmployeeId(EMPLOYEE_ID);
+
+        when(orderPersistencePort.getOrderById(orderId)).thenReturn(Optional.of(order));
+        doNothing().when(orderHelper).validateEmployeeRole(anyString());
+        doNothing().when(orderHelper).validateEmployeeAssignedToOrder(order, EMPLOYEE_ID);
+        doThrow(InvalidOrderStatusException.class).when(orderHelper).validateOrderIsInPreparation(order);
+
+        assertThrows(InvalidOrderStatusException.class,
+                () -> orderUseCase.markOrderAsReady(orderId, EMPLOYEE_ID, EMPLOYEE_ROLE));
+
+        verify(orderPersistencePort, never()).updateOrder(any());
+        verify(orderNotificationPort, never()).notifyClientOrderReady(any());
     }
 }

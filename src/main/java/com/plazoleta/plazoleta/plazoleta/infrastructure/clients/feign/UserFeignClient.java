@@ -1,6 +1,6 @@
 package com.plazoleta.plazoleta.plazoleta.infrastructure.clients.feign;
 
-import com.plazoleta.plazoleta.plazoleta.infrastructure.clients.feign.dto.UserResponse;
+import com.plazoleta.plazoleta.plazoleta.infrastructure.clients.feign.dto.response.UserResponse;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.utils.constants.FeignConstants;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;

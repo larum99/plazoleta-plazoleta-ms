@@ -29,7 +29,7 @@ public class ControllerConstants {
 
     public static final String LIST_DISHES_PATH = "/dishes";
 
-    public static final String SAVE_ORDER_PATH = "/order";
+    public static final String SAVE_ORDER_PATH = "/orders";
 
     public static final String ROLE_CLIENT = "hasRole('CLIENTE')";
 
@@ -39,5 +39,5 @@ public class ControllerConstants {
 
     public static final String ROLE_EMPLOYEE = "hasRole('EMPLEADO')";
 
-    public static final String UPDATE_ORDER_STATUS_PATH = "/{orderId}/status";
+    public static final String UPDATE_ORDER_STATUS_PATH = "/orders/{orderId}/status";
 }

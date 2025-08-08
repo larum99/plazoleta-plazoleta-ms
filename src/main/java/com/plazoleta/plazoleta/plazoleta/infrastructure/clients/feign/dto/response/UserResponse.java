@@ -1,4 +1,4 @@
-package com.plazoleta.plazoleta.plazoleta.infrastructure.clients.feign.dto;
+package com.plazoleta.plazoleta.plazoleta.infrastructure.clients.feign.dto.response;
 
 import java.time.LocalDate;
 

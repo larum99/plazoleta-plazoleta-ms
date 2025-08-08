@@ -16,6 +16,7 @@ import com.plazoleta.plazoleta.plazoleta.domain.model.OrderDishModel;
 import com.plazoleta.plazoleta.plazoleta.domain.model.OrderModel;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.in.OrderServicePort;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.in.RoleValidatorPort;
+import com.plazoleta.plazoleta.plazoleta.domain.utils.OrderStatus;
 import com.plazoleta.plazoleta.plazoleta.domain.utils.PageResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -72,8 +73,24 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public UpdateOrderStatusResponse updateOrderStatus(Long orderId, UpdateOrderRequest request, String token) {
         String role = roleValidatorPort.extractRole(token);
+        Long employeeId = roleValidatorPort.extractUserId(token);
 
-        orderServicePort.assignOrderAndChangeStatus(orderId, request.employeeId(), role, request.status());
+        try {
+            OrderStatus status = OrderStatus.valueOf(request.status().toUpperCase());
+
+            switch (status) {
+                case EN_PREPARACION:
+                    orderServicePort.assignOrderAndChangeStatus(orderId, employeeId, role, status.name());
+                    break;
+                case LISTO:
+                    orderServicePort.markOrderAsReady(orderId, employeeId, role);
+                    break;
+                default:
+                    throw new IllegalArgumentException(Constants.ERROR_UNSUPPORTED_ORDER_STATUS + status);
+            }
+        } catch (IllegalArgumentException | NullPointerException e) {
+            throw new IllegalArgumentException(Constants.ERROR_INVALID_ORDER_STATUS + request.status());
+        }
 
         return new UpdateOrderStatusResponse(Constants.UPDATE_ORDER_STATUS_SUCCESS_MESSAGE, LocalDateTime.now());
     }

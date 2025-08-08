@@ -17,6 +17,8 @@ spring:
 microservices:
   users:
     url: http://localhost:8090
+  messaging:
+    url: http://localhost:8092
 
 security:
   jwt:

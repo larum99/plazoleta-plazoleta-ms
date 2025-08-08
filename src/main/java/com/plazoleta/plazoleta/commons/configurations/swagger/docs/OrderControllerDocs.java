@@ -95,7 +95,7 @@ public class OrderControllerDocs {
     @Retention(RetentionPolicy.RUNTIME)
     @Operation(
             summary = "Actualizar estado del pedido",
-            description = "Permite a un empleado asignarse un pedido y cambiar su estado a 'EN_PREPARACION'.",
+            description = "Permite a un empleado actualizar estado del pedido.",
             requestBody = @RequestBody(
                     description = "Nuevo estado del pedido",
                     required = true,

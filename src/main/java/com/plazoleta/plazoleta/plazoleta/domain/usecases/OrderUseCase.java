@@ -5,10 +5,7 @@ import com.plazoleta.plazoleta.plazoleta.domain.exceptions.OrderNotFoundExceptio
 import com.plazoleta.plazoleta.plazoleta.domain.helpers.OrderHelper;
 import com.plazoleta.plazoleta.plazoleta.domain.model.OrderModel;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.in.OrderServicePort;
-import com.plazoleta.plazoleta.plazoleta.domain.ports.out.DishPersistencePort;
-import com.plazoleta.plazoleta.plazoleta.domain.ports.out.EmployeeRestaurantPersistencePort;
-import com.plazoleta.plazoleta.plazoleta.domain.ports.out.OrderPersistencePort;
-import com.plazoleta.plazoleta.plazoleta.domain.ports.out.RestaurantPersistencePort;
+import com.plazoleta.plazoleta.plazoleta.domain.ports.out.*;
 import com.plazoleta.plazoleta.plazoleta.domain.utils.OrderStatus;
 import com.plazoleta.plazoleta.plazoleta.domain.utils.PageResult;
 
@@ -17,16 +14,18 @@ import java.time.LocalDateTime;
 public class OrderUseCase implements OrderServicePort {
 
     private final OrderPersistencePort orderPersistencePort;
+    private final OrderNotificationPort orderNotificationPort;
     private final OrderHelper orderHelper;
 
     public OrderUseCase(
             OrderPersistencePort orderPersistencePort,
             DishPersistencePort dishPersistencePort,
             RestaurantPersistencePort restaurantPersistencePort,
-            EmployeeRestaurantPersistencePort employeeRestaurantPersistencePort
-
+            EmployeeRestaurantPersistencePort employeeRestaurantPersistencePort,
+            OrderNotificationPort orderNotificationPort
     ) {
         this.orderPersistencePort = orderPersistencePort;
+        this.orderNotificationPort = orderNotificationPort;
         this.orderHelper = new OrderHelper(orderPersistencePort, dishPersistencePort, restaurantPersistencePort, employeeRestaurantPersistencePort);
     }
 
@@ -77,5 +76,21 @@ public class OrderUseCase implements OrderServicePort {
         order.setStatus(OrderStatus.EN_PREPARACION);
 
         orderPersistencePort.saveOrder(order);
+    }
+
+    @Override
+    public void markOrderAsReady(Long orderId, Long employeeId, String role) {
+        orderHelper.validateEmployeeRole(role);
+
+        OrderModel order = orderPersistencePort.getOrderById(orderId)
+                .orElseThrow(OrderNotFoundException::new);
+
+        orderHelper.validateEmployeeAssignedToOrder(order, employeeId);
+        orderHelper.validateOrderIsInPreparation(order);
+
+        order.setStatus(OrderStatus.LISTO);
+        orderPersistencePort.updateOrder(order);
+
+        orderNotificationPort.notifyClientOrderReady(order);
     }
 }

@@ -32,10 +32,14 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class OrderHelperTest {
 
-    @Mock private OrderPersistencePort orderPersistencePort;
-    @Mock private DishPersistencePort dishPersistencePort;
-    @Mock private RestaurantPersistencePort restaurantPersistencePort;
-    @Mock private EmployeeRestaurantPersistencePort employeeRestaurantPersistencePort;
+    @Mock
+    private OrderPersistencePort orderPersistencePort;
+    @Mock
+    private DishPersistencePort dishPersistencePort;
+    @Mock
+    private RestaurantPersistencePort restaurantPersistencePort;
+    @Mock
+    private EmployeeRestaurantPersistencePort employeeRestaurantPersistencePort;
 
     @InjectMocks
     private OrderHelper orderHelper;
@@ -45,6 +49,7 @@ class OrderHelperTest {
     private static final Long DISH_ID = 100L;
     private static final Long ANOTHER_RESTAURANT_ID = 11L;
     private static final Long EMPLOYEE_ID = 20L;
+    private static final Long ANOTHER_EMPLOYEE_ID = 21L;
 
     private RestaurantModel restaurantModel;
     private DishModel dishModel;
@@ -104,7 +109,9 @@ class OrderHelperTest {
     @Test
     void validateDishesExistAndBelongToSameRestaurant_withValidDishes_shouldNotThrowException() {
         OrderDishModel orderDish = new OrderDishModel();
-        orderDish.setDish(new DishModel() {{ setId(DISH_ID); }});
+        orderDish.setDish(new DishModel() {{
+            setId(DISH_ID);
+        }});
         when(dishPersistencePort.getDishById(DISH_ID)).thenReturn(Optional.of(dishModel));
 
         assertDoesNotThrow(() -> orderHelper.validateDishesExistAndBelongToSameRestaurant(
@@ -114,7 +121,9 @@ class OrderHelperTest {
     @Test
     void validateDishesExistAndBelongToSameRestaurant_withDishNotFound_shouldThrowDishNotFoundException() {
         OrderDishModel orderDish = new OrderDishModel();
-        orderDish.setDish(new DishModel() {{ setId(DISH_ID); }});
+        orderDish.setDish(new DishModel() {{
+            setId(DISH_ID);
+        }});
         when(dishPersistencePort.getDishById(DISH_ID)).thenReturn(Optional.empty());
 
         assertThrows(DishNotFoundException.class, () ->
@@ -131,7 +140,9 @@ class OrderHelperTest {
         wrongDish.setRestaurant(anotherRestaurant);
 
         OrderDishModel orderDish = new OrderDishModel();
-        orderDish.setDish(new DishModel() {{ setId(DISH_ID); }});
+        orderDish.setDish(new DishModel() {{
+            setId(DISH_ID);
+        }});
         when(dishPersistencePort.getDishById(DISH_ID)).thenReturn(Optional.of(wrongDish));
 
         assertThrows(DishDoesNotBelongToRestaurantException.class, () ->
@@ -250,5 +261,38 @@ class OrderHelperTest {
         String validStatus = "EN_PREPARACION";
 
         assertDoesNotThrow(() -> orderHelper.validateNewStatusIsInPreparation(validStatus));
+    }
+
+    @Test
+    void validateEmployeeAssignedToOrder_whenEmployeeIsAssigned_shouldNotThrow() {
+        OrderModel order = new OrderModel();
+        order.setAssignedEmployeeId(EMPLOYEE_ID);
+
+        assertDoesNotThrow(() -> orderHelper.validateEmployeeAssignedToOrder(order, EMPLOYEE_ID));
+    }
+
+    @Test
+    void validateEmployeeAssignedToOrder_whenEmployeeIsNotAssigned_shouldThrowUnauthorizedOrderAccessException() {
+        OrderModel order = new OrderModel();
+        order.setAssignedEmployeeId(ANOTHER_EMPLOYEE_ID);
+
+        assertThrows(UnauthorizedOrderAccessException.class,
+                () -> orderHelper.validateEmployeeAssignedToOrder(order, EMPLOYEE_ID));
+    }
+
+    @Test
+    void validateOrderIsInPreparation_whenStatusIsInPreparation_shouldNotThrow() {
+        OrderModel order = new OrderModel();
+        order.setStatus(OrderStatus.EN_PREPARACION);
+
+        assertDoesNotThrow(() -> orderHelper.validateOrderIsInPreparation(order));
+    }
+
+    @Test
+    void validateOrderIsInPreparation_whenStatusIsNotInPreparation_shouldThrowInvalidOrderStatusException() {
+        OrderModel order = new OrderModel();
+        order.setStatus(OrderStatus.PENDIENTE);
+
+        assertThrows(InvalidOrderStatusException.class, () -> orderHelper.validateOrderIsInPreparation(order));
     }
 }

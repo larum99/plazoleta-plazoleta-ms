@@ -12,4 +12,8 @@ public class FeignConstants {
     public static final String GET_BY_ID_PATH = "/api/v1/users/{id}";
     public static final String EMAIL_PARAM = "email";
     public static final String ID_PATH_VARIABLE = "id";
+
+    public static final String MESSAGING_NAME_SERVICE = "messaging-service";
+    public static final String MESSAGING_URL_SERVICE = "${microservices.messaging.url}";
+    public static final String SEND_ORDER_READY_MESSAGE_PATH = "/api/v1/messaging/send-code";
 }
