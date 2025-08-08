@@ -7,16 +7,19 @@ public class SwaggerConstants {
     }
 
     public static final String APPLICATION_JSON = "application/json";
+
     public static final String CREATED = "201";
     public static final String OK = "200";
     public static final String BAD_REQUEST = "400";
     public static final String NOT_FOUND = "404";
+
     public static final String EXAMPLE_NAME_SUCCESS = "Respuesta exitosa";
     public static final String EXAMPLE_NAME_ERROR = "Error";
-    public static final String EXAMPLE_NAME_CREATE_REQUEST = "Ejemplo de creación";
-    public static final String EXAMPLE_NAME_UPDATE_REQUEST = "Ejemplo de actualización";
     public static final String EXAMPLE_NAME_VALIDATION_ERROR = "Error de validación";
     public static final String EXAMPLE_NAME_NOT_FOUND = "No encontrado";
+    public static final String EXAMPLE_NAME_LIST = "Ejemplo de listado";
+    public static final String EXAMPLE_NAME_CREATE_REQUEST = "Ejemplo de creación";
+    public static final String EXAMPLE_NAME_UPDATE_REQUEST = "Ejemplo de actualización";
 
     public static final String SUMMARY_CREATE_RESTAURANT = "Crear un nuevo restaurante";
     public static final String DESCRIPTION_CREATE_RESTAURANT = "Permite registrar un nuevo restaurante en la plataforma.";
@@ -62,7 +65,7 @@ public class SwaggerConstants {
     public static final String DESCRIPTION_LIST_DISHES_SUCCESS = "Listado de platos obtenido exitosamente.";
     public static final String DESCRIPTION_BAD_REQUEST_MISSING_FILTERS = "Faltan filtros requeridos como restaurantId o categoryId.";
 
-    public static final String EXAMPLE_NAME_LIST = "dishListExample";
+    //public static final String EXAMPLE_NAME_LIST = "dishListExample";
     public static final String SUMMARY_DISH_LIST = "Ejemplo de listado de platos";
     public static final String SUMMARY_MISSING_FILTERS = "Faltan filtros obligatorios";
 
@@ -74,4 +77,23 @@ public class SwaggerConstants {
     public static final String DESCRIPTION_ORDER_VALIDATION_ERROR = "Datos inválidos o platos no pertenecen al restaurante";
     public static final String SUMMARY_ORDER_INVALID = "Pedido inválido";
 
+    public static final String SUMMARY_LIST_ORDERS = "Listar pedidos filtrados y paginados";
+    public static final String DESCRIPTION_LIST_ORDERS = "Obtiene una lista de pedidos del restaurante del empleado filtrados por estado, con paginación.";
+    public static final String DESCRIPTION_ORDER_LISTED = "Pedidos listados correctamente";
+    public static final String SUMMARY_LIST_BAD_REQUEST = "Filtros inválidos o usuario no autorizado";
+
+    public static final String SUMMARY_UPDATE_ORDER = "Actualizar estado del pedido";
+    public static final String DESCRIPTION_UPDATE_ORDER = "Permite a un empleado actualizar estado del pedido.";
+    public static final String DESCRIPTION_UPDATE_REQUEST = "Nuevo estado del pedido";
+    public static final String DESCRIPTION_ORDER_UPDATED_SUCCESS = "Estado del pedido actualizado correctamente";
+    public static final String DESCRIPTION_ORDER_NOT_FOUND = "Pedido no encontrado";
+    public static final String DESCRIPTION_ORDER_ALREADY_ASSIGNED = "Pedido ya asignado o estado inválido";
+    public static final String SUMMARY_ORDER_UPDATED = "Pedido actualizado";
+    public static final String SUMMARY_ORDER_NOT_FOUND = "No encontrado";
+    public static final String SUMMARY_ORDER_ALREADY_ASSIGNED = "Pedido ya asignado";
+
+    public static final String EXAMPLE_NAME_UPDATE_EN_PREPARACION = "Actualizar a estado EN_PREPARACION";
+    public static final String EXAMPLE_NAME_UPDATE_ENTREGADO = "Actualizar a estado ENTREGADO";
+    public static final String SUMMARY_UPDATE_NO_CODE = "Ejemplo sin código de verificación";
+    public static final String SUMMARY_UPDATE_WITH_CODE = "Ejemplo con código de verificación para entrega";
 }

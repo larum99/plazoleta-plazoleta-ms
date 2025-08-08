@@ -10,7 +10,6 @@ import com.plazoleta.plazoleta.plazoleta.domain.ports.out.EmployeeRestaurantPers
 import com.plazoleta.plazoleta.plazoleta.domain.ports.out.OrderPersistencePort;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.out.RestaurantPersistencePort;
 import com.plazoleta.plazoleta.plazoleta.domain.utils.DomainConstants;
-
 import com.plazoleta.plazoleta.plazoleta.domain.utils.OrderStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,7 +25,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -50,9 +48,11 @@ class OrderHelperTest {
     private static final Long ANOTHER_RESTAURANT_ID = 11L;
     private static final Long EMPLOYEE_ID = 20L;
     private static final Long ANOTHER_EMPLOYEE_ID = 21L;
+    private static final String VERIFICATION_CODE = "12345";
 
     private RestaurantModel restaurantModel;
     private DishModel dishModel;
+    private OrderModel orderModel;
 
     @BeforeEach
     void setUp() {
@@ -62,6 +62,8 @@ class OrderHelperTest {
         dishModel = new DishModel();
         dishModel.setId(DISH_ID);
         dishModel.setRestaurant(restaurantModel);
+
+        orderModel = new OrderModel();
     }
 
     @Test
@@ -192,107 +194,113 @@ class OrderHelperTest {
 
     @Test
     void validateEmployeeCanAssignOrder_withMatchingRestaurant_shouldNotThrow() {
-        OrderModel order = new OrderModel();
-        RestaurantModel restaurant = new RestaurantModel();
-        restaurant.setId(RESTAURANT_ID);
-        order.setRestaurant(restaurant);
+        orderModel.setRestaurant(restaurantModel);
 
         when(employeeRestaurantPersistencePort.getRestaurantIdByEmployeeId(EMPLOYEE_ID))
                 .thenReturn(Optional.of(RESTAURANT_ID));
 
-        assertDoesNotThrow(() -> orderHelper.validateEmployeeCanAssignOrder(order, EMPLOYEE_ID));
+        assertDoesNotThrow(() -> orderHelper.validateEmployeeCanAssignOrder(orderModel, EMPLOYEE_ID));
     }
 
     @Test
     void validateEmployeeCanAssignOrder_withDifferentRestaurant_shouldThrowInvalidRestaurantAssignmentException() {
-        OrderModel order = new OrderModel();
-        RestaurantModel restaurant = new RestaurantModel();
-        restaurant.setId(RESTAURANT_ID);
-        order.setRestaurant(restaurant);
+        orderModel.setRestaurant(restaurantModel);
 
         when(employeeRestaurantPersistencePort.getRestaurantIdByEmployeeId(EMPLOYEE_ID))
                 .thenReturn(Optional.of(ANOTHER_RESTAURANT_ID));
 
         assertThrows(InvalidRestaurantAssignmentException.class,
-                () -> orderHelper.validateEmployeeCanAssignOrder(order, EMPLOYEE_ID));
+                () -> orderHelper.validateEmployeeCanAssignOrder(orderModel, EMPLOYEE_ID));
     }
 
     @Test
     void validateOrderNotAssigned_whenOrderAlreadyAssigned_shouldThrowOrderAlreadyAssignedException() {
-        OrderModel order = new OrderModel();
-        order.setAssignedEmployeeId(EMPLOYEE_ID);
-
-        assertThrows(OrderAlreadyAssignedException.class, () -> orderHelper.validateOrderNotAssigned(order));
+        orderModel.setAssignedEmployeeId(EMPLOYEE_ID);
+        assertThrows(OrderAlreadyAssignedException.class, () -> orderHelper.validateOrderNotAssigned(orderModel));
     }
 
     @Test
     void validateOrderNotAssigned_whenOrderIsNotAssigned_shouldNotThrow() {
-        OrderModel order = new OrderModel();
-        order.setAssignedEmployeeId(null);
-
-        assertDoesNotThrow(() -> orderHelper.validateOrderNotAssigned(order));
+        orderModel.setAssignedEmployeeId(null);
+        assertDoesNotThrow(() -> orderHelper.validateOrderNotAssigned(orderModel));
     }
 
     @Test
     void validateOrderIsPending_whenStatusIsNotPending_shouldThrowInvalidOrderStatusException() {
-        OrderModel order = new OrderModel();
-        order.setStatus(OrderStatus.EN_PREPARACION);
-
-        assertThrows(InvalidOrderStatusException.class, () -> orderHelper.validateOrderIsPending(order));
+        orderModel.setStatus(OrderStatus.EN_PREPARACION);
+        assertThrows(InvalidOrderStatusException.class, () -> orderHelper.validateOrderIsPending(orderModel));
     }
 
     @Test
     void validateOrderIsPending_whenStatusIsPending_shouldNotThrow() {
-        OrderModel order = new OrderModel();
-        order.setStatus(OrderStatus.PENDIENTE);
-
-        assertDoesNotThrow(() -> orderHelper.validateOrderIsPending(order));
+        orderModel.setStatus(OrderStatus.PENDIENTE);
+        assertDoesNotThrow(() -> orderHelper.validateOrderIsPending(orderModel));
     }
 
     @Test
     void validateNewStatusIsInPreparation_whenStatusIsInvalid_shouldThrowInvalidOrderStatusException() {
         String invalidStatus = "ENTREGADO";
-
         assertThrows(InvalidOrderStatusException.class, () -> orderHelper.validateNewStatusIsInPreparation(invalidStatus));
     }
 
     @Test
     void validateNewStatusIsInPreparation_withValidStatus_shouldNotThrow() {
         String validStatus = "EN_PREPARACION";
-
         assertDoesNotThrow(() -> orderHelper.validateNewStatusIsInPreparation(validStatus));
     }
 
     @Test
     void validateEmployeeAssignedToOrder_whenEmployeeIsAssigned_shouldNotThrow() {
-        OrderModel order = new OrderModel();
-        order.setAssignedEmployeeId(EMPLOYEE_ID);
-
-        assertDoesNotThrow(() -> orderHelper.validateEmployeeAssignedToOrder(order, EMPLOYEE_ID));
+        orderModel.setAssignedEmployeeId(EMPLOYEE_ID);
+        assertDoesNotThrow(() -> orderHelper.validateEmployeeAssignedToOrder(orderModel, EMPLOYEE_ID));
     }
 
     @Test
     void validateEmployeeAssignedToOrder_whenEmployeeIsNotAssigned_shouldThrowUnauthorizedOrderAccessException() {
-        OrderModel order = new OrderModel();
-        order.setAssignedEmployeeId(ANOTHER_EMPLOYEE_ID);
-
+        orderModel.setAssignedEmployeeId(ANOTHER_EMPLOYEE_ID);
         assertThrows(UnauthorizedOrderAccessException.class,
-                () -> orderHelper.validateEmployeeAssignedToOrder(order, EMPLOYEE_ID));
+                () -> orderHelper.validateEmployeeAssignedToOrder(orderModel, EMPLOYEE_ID));
     }
 
     @Test
     void validateOrderIsInPreparation_whenStatusIsInPreparation_shouldNotThrow() {
-        OrderModel order = new OrderModel();
-        order.setStatus(OrderStatus.EN_PREPARACION);
-
-        assertDoesNotThrow(() -> orderHelper.validateOrderIsInPreparation(order));
+        orderModel.setStatus(OrderStatus.EN_PREPARACION);
+        assertDoesNotThrow(() -> orderHelper.validateOrderIsInPreparation(orderModel));
     }
 
     @Test
     void validateOrderIsInPreparation_whenStatusIsNotInPreparation_shouldThrowInvalidOrderStatusException() {
-        OrderModel order = new OrderModel();
-        order.setStatus(OrderStatus.PENDIENTE);
+        orderModel.setStatus(OrderStatus.PENDIENTE);
+        assertThrows(InvalidOrderStatusException.class, () -> orderHelper.validateOrderIsInPreparation(orderModel));
+    }
 
-        assertThrows(InvalidOrderStatusException.class, () -> orderHelper.validateOrderIsInPreparation(order));
+    @Test
+    void validateOrderIsReady_whenStatusIsReady_shouldNotThrow() {
+        orderModel.setStatus(OrderStatus.LISTO);
+        assertDoesNotThrow(() -> orderHelper.validateOrderIsReady(orderModel));
+    }
+
+    @Test
+    void validateOrderIsReady_whenStatusIsNotReady_shouldThrowInvalidOrderStatusException() {
+        orderModel.setStatus(OrderStatus.EN_PREPARACION);
+        assertThrows(InvalidOrderStatusException.class, () -> orderHelper.validateOrderIsReady(orderModel));
+    }
+
+    @Test
+    void validateVerificationCode_whenCodeMatches_shouldNotThrow() {
+        orderModel.setVerificationCode(VERIFICATION_CODE);
+        assertDoesNotThrow(() -> orderHelper.validateVerificationCode(orderModel, VERIFICATION_CODE));
+    }
+
+    @Test
+    void validateVerificationCode_whenCodeDoesNotMatch_shouldThrowInvalidVerificationCodeException() {
+        orderModel.setVerificationCode(VERIFICATION_CODE);
+        assertThrows(InvalidVerificationCodeException.class, () -> orderHelper.validateVerificationCode(orderModel, "wrong_code"));
+    }
+
+    @Test
+    void validateVerificationCode_whenOrderCodeIsNull_shouldThrowInvalidVerificationCodeException() {
+        orderModel.setVerificationCode(null);
+        assertThrows(InvalidVerificationCodeException.class, () -> orderHelper.validateVerificationCode(orderModel, VERIFICATION_CODE));
     }
 }

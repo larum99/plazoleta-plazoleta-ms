@@ -69,79 +69,95 @@ public class OrderControllerDocs {
     @Target({ElementType.METHOD})
     @Retention(RetentionPolicy.RUNTIME)
     @Operation(
-            summary = "Listar pedidos filtrados y paginados",
-            description = "Obtiene una lista de pedidos del restaurante del empleado filtrados por estado, con paginación."
+            summary = SUMMARY_LIST_ORDERS,
+            description = DESCRIPTION_LIST_ORDERS
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = OK, description = "Pedidos listados correctamente",
+            @ApiResponse(
+                    responseCode = OK,
+                    description = DESCRIPTION_ORDER_LISTED,
                     content = @Content(
                             mediaType = APPLICATION_JSON,
                             examples = @ExampleObject(
                                     name = EXAMPLE_NAME_LIST,
-                                    summary = "Listado de pedidos",
+                                    summary = "Listado de pedidos", // Puedes crear una constante si deseas
                                     value = OrderSwaggerExamples.ORDER_LIST_RESPONSE
                             )
                     )
             ),
-            @ApiResponse(responseCode = BAD_REQUEST, description = "Filtros inválidos o usuario no autorizado",
-                    content = @Content(
-                            mediaType = APPLICATION_JSON
-                    )
+            @ApiResponse(
+                    responseCode = BAD_REQUEST,
+                    description = SUMMARY_LIST_BAD_REQUEST,
+                    content = @Content(mediaType = APPLICATION_JSON)
             )
     })
-    public @interface ListOrdersDocs {}
+    public @interface ListOrdersDocs {
+    }
 
     @Target({ElementType.METHOD})
     @Retention(RetentionPolicy.RUNTIME)
     @Operation(
-            summary = "Actualizar estado del pedido",
-            description = "Permite a un empleado actualizar estado del pedido.",
+            summary = SUMMARY_UPDATE_ORDER,
+            description = DESCRIPTION_UPDATE_ORDER,
             requestBody = @RequestBody(
-                    description = "Nuevo estado del pedido",
+                    description = DESCRIPTION_UPDATE_REQUEST,
                     required = true,
                     content = @Content(
                             mediaType = APPLICATION_JSON,
-                            examples = @ExampleObject(
-                                    name = EXAMPLE_NAME_UPDATE_REQUEST,
-                                    summary = "Actualizar estado del pedido",
-                                    value = OrderSwaggerExamples.ORDER_UPDATE_REQUEST
-                            )
+                            examples = {
+                                    @ExampleObject(
+                                            name = EXAMPLE_NAME_UPDATE_EN_PREPARACION,
+                                            summary = SUMMARY_UPDATE_NO_CODE,
+                                            value = OrderSwaggerExamples.ORDER_UPDATE_REQUEST
+                                    ),
+                                    @ExampleObject(
+                                            name = EXAMPLE_NAME_UPDATE_ENTREGADO,
+                                            summary = SUMMARY_UPDATE_WITH_CODE,
+                                            value = OrderSwaggerExamples.ORDER_UPDATE_WITH_CODE_REQUEST
+                                    )
+                            }
                     )
             )
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = OK, description = "Estado del pedido actualizado correctamente",
+            @ApiResponse(
+                    responseCode = OK,
+                    description = DESCRIPTION_ORDER_UPDATED_SUCCESS,
                     content = @Content(
                             mediaType = APPLICATION_JSON,
                             examples = @ExampleObject(
                                     name = EXAMPLE_NAME_SUCCESS,
-                                    summary = "Pedido actualizado",
+                                    summary = SUMMARY_ORDER_UPDATED,
                                     value = OrderSwaggerExamples.ORDER_UPDATED_RESPONSE
                             )
                     )
             ),
-            @ApiResponse(responseCode = NOT_FOUND, description = "Pedido no encontrado",
+            @ApiResponse(
+                    responseCode = NOT_FOUND,
+                    description = DESCRIPTION_ORDER_NOT_FOUND,
                     content = @Content(
                             mediaType = APPLICATION_JSON,
                             examples = @ExampleObject(
                                     name = EXAMPLE_NAME_NOT_FOUND,
-                                    summary = "No encontrado",
+                                    summary = SUMMARY_ORDER_NOT_FOUND,
                                     value = OrderSwaggerExamples.ORDER_NOT_FOUND_RESPONSE
                             )
                     )
             ),
-            @ApiResponse(responseCode = BAD_REQUEST, description = "Pedido ya asignado o estado inválido",
+            @ApiResponse(
+                    responseCode = BAD_REQUEST,
+                    description = DESCRIPTION_ORDER_ALREADY_ASSIGNED,
                     content = @Content(
                             mediaType = APPLICATION_JSON,
                             examples = @ExampleObject(
                                     name = EXAMPLE_NAME_ERROR,
-                                    summary = "Pedido ya asignado",
+                                    summary = SUMMARY_ORDER_ALREADY_ASSIGNED,
                                     value = OrderSwaggerExamples.ORDER_ALREADY_ASSIGNED_RESPONSE
                             )
                     )
             )
     })
-    public @interface UpdateOrderDocs {}
+    public @interface UpdateOrderDocs {
+    }
 
 }
-

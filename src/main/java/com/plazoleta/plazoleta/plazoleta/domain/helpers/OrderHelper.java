@@ -117,4 +117,16 @@ public class OrderHelper {
         }
     }
 
+    public void validateOrderIsReady(OrderModel order) {
+        if (!OrderStatus.LISTO.equals(order.getStatus())) {
+            throw new InvalidOrderStatusException();
+        }
+    }
+
+    public void validateVerificationCode(OrderModel order, String code) {
+        if (order.getVerificationCode() == null || !order.getVerificationCode().equals(code)) {
+            throw new InvalidVerificationCodeException();
+        }
+    }
+
 }

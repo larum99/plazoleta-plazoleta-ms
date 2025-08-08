@@ -70,6 +70,14 @@ public class OrderSwaggerExamples {
         }
     """;
 
+    public static final String ORDER_UPDATE_WITH_CODE_REQUEST = """
+        {
+            "status": "ENTREGADO",
+            "code": "123456"
+        }
+    """;
+
+
     public static final String ORDER_UPDATED_RESPONSE = """
         {
             "message": "Pedido actualizado correctamente.",

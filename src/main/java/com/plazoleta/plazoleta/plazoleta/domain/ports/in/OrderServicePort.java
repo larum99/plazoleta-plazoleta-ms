@@ -9,5 +9,5 @@ public interface OrderServicePort {
     PageResult<OrderModel> listOrders(OrderListCriteria criteria, String role, Long employeeId);
     void assignOrderAndChangeStatus(Long orderId, Long employeeId, String role, String status);
     void markOrderAsReady(Long orderId, Long employeeId, String role);
-
+    void markOrderAsDelivered(Long orderId, Long employeeId, String role, String code);
 }

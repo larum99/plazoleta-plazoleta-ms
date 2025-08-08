@@ -95,4 +95,19 @@ public class OrderUseCase implements OrderServicePort {
 
         orderPersistencePort.updateOrder(order);
     }
+
+    @Override
+    public void markOrderAsDelivered(Long orderId, Long employeeId, String role, String code) {
+        orderHelper.validateEmployeeRole(role);
+
+        OrderModel order = orderPersistencePort.getOrderById(orderId)
+                .orElseThrow(OrderNotFoundException::new);
+
+        orderHelper.validateEmployeeAssignedToOrder(order, employeeId);
+        orderHelper.validateOrderIsReady(order);
+        orderHelper.validateVerificationCode(order, code);
+
+        order.setStatus(OrderStatus.ENTREGADO);
+        orderPersistencePort.updateOrder(order);
+    }
 }

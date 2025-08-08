@@ -82,9 +82,15 @@ public class OrderServiceImpl implements OrderService {
                 case EN_PREPARACION:
                     orderServicePort.assignOrderAndChangeStatus(orderId, employeeId, role, status.name());
                     break;
+
                 case LISTO:
                     orderServicePort.markOrderAsReady(orderId, employeeId, role);
                     break;
+
+                case ENTREGADO:
+                    orderServicePort.markOrderAsDelivered(orderId, employeeId, role, request.code());
+                    break;
+
                 default:
                     throw new IllegalArgumentException(Constants.ERROR_UNSUPPORTED_ORDER_STATUS + status);
             }
@@ -94,4 +100,5 @@ public class OrderServiceImpl implements OrderService {
 
         return new UpdateOrderStatusResponse(Constants.UPDATE_ORDER_STATUS_SUCCESS_MESSAGE, LocalDateTime.now());
     }
+
 }

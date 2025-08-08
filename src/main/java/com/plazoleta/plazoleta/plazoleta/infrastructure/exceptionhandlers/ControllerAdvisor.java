@@ -146,4 +146,9 @@ public class ControllerAdvisor {
                 ExceptionConstants.UNAUTHORIZED_ORDER_ACCESS_MESSAGE, LocalDateTime.now()));
     }
 
+    @ExceptionHandler(InvalidVerificationCodeException.class)
+    public ResponseEntity<ExceptionResponse> handleInvalidVerificationCode(InvalidVerificationCodeException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ExceptionResponse(
+                ExceptionConstants.INVALID_VERIFICATION_CODE_MESSAGE, LocalDateTime.now()));
+    }
 }

@@ -54,6 +54,7 @@ class OrderUseCaseTest {
     private static final Long DISH_ID = 100L;
     private static final String CLIENT_ROLE = "CLIENTE";
     private static final String EMPLOYEE_ROLE = "EMPLEADO";
+    private static final String VALID_CODE = "123456";
 
     private OrderModel validOrder;
     private RestaurantModel restaurantModel;
@@ -287,12 +288,13 @@ class OrderUseCaseTest {
         doNothing().when(orderHelper).validateEmployeeRole(anyString());
         doNothing().when(orderHelper).validateEmployeeAssignedToOrder(order, EMPLOYEE_ID);
         doNothing().when(orderHelper).validateOrderIsInPreparation(order);
+        when(orderNotificationPort.notifyClientOrderReady(order)).thenReturn(VALID_CODE);
 
         orderUseCase.markOrderAsReady(orderId, EMPLOYEE_ID, EMPLOYEE_ROLE);
 
         assertEquals(OrderStatus.LISTO, order.getStatus());
+        assertEquals(VALID_CODE, order.getVerificationCode());
         verify(orderPersistencePort).updateOrder(order);
-        verify(orderNotificationPort).notifyClientOrderReady(order);
     }
 
     @Test
@@ -347,5 +349,96 @@ class OrderUseCaseTest {
 
         verify(orderPersistencePort, never()).updateOrder(any());
         verify(orderNotificationPort, never()).notifyClientOrderReady(any());
+    }
+
+    @Test
+    void markOrderAsDelivered_withValidDataAndCode_shouldUpdateOrder() {
+        Long orderId = 1L;
+        OrderModel order = new OrderModel();
+        order.setId(orderId);
+        order.setStatus(OrderStatus.LISTO);
+        order.setAssignedEmployeeId(EMPLOYEE_ID);
+        order.setVerificationCode(VALID_CODE);
+
+        when(orderPersistencePort.getOrderById(orderId)).thenReturn(Optional.of(order));
+        doNothing().when(orderHelper).validateEmployeeRole(anyString());
+        doNothing().when(orderHelper).validateEmployeeAssignedToOrder(order, EMPLOYEE_ID);
+        doNothing().when(orderHelper).validateOrderIsReady(order);
+        doNothing().when(orderHelper).validateVerificationCode(order, VALID_CODE);
+
+        orderUseCase.markOrderAsDelivered(orderId, EMPLOYEE_ID, EMPLOYEE_ROLE, VALID_CODE);
+
+        assertEquals(OrderStatus.ENTREGADO, order.getStatus());
+        verify(orderPersistencePort).updateOrder(order);
+    }
+
+    @Test
+    void markOrderAsDelivered_orderNotFound_shouldThrowException() {
+        Long orderId = 999L;
+        when(orderPersistencePort.getOrderById(orderId)).thenReturn(Optional.empty());
+        doNothing().when(orderHelper).validateEmployeeRole(anyString());
+
+        assertThrows(OrderNotFoundException.class,
+                () -> orderUseCase.markOrderAsDelivered(orderId, EMPLOYEE_ID, EMPLOYEE_ROLE, VALID_CODE));
+
+        verify(orderPersistencePort, never()).updateOrder(any());
+    }
+
+    @Test
+    void markOrderAsDelivered_employeeNotAssigned_shouldThrowException() {
+        Long orderId = 1L;
+        Long otherEmployeeId = 99L;
+        OrderModel order = new OrderModel();
+        order.setId(orderId);
+        order.setStatus(OrderStatus.LISTO);
+        order.setAssignedEmployeeId(otherEmployeeId);
+
+        when(orderPersistencePort.getOrderById(orderId)).thenReturn(Optional.of(order));
+        doNothing().when(orderHelper).validateEmployeeRole(anyString());
+        doThrow(UnauthorizedOrderAccessException.class).when(orderHelper).validateEmployeeAssignedToOrder(order, EMPLOYEE_ID);
+
+        assertThrows(UnauthorizedOrderAccessException.class,
+                () -> orderUseCase.markOrderAsDelivered(orderId, EMPLOYEE_ID, EMPLOYEE_ROLE, VALID_CODE));
+
+        verify(orderPersistencePort, never()).updateOrder(any());
+    }
+
+    @Test
+    void markOrderAsDelivered_orderNotReady_shouldThrowException() {
+        Long orderId = 1L;
+        OrderModel order = new OrderModel();
+        order.setId(orderId);
+        order.setStatus(OrderStatus.EN_PREPARACION);
+        order.setAssignedEmployeeId(EMPLOYEE_ID);
+
+        when(orderPersistencePort.getOrderById(orderId)).thenReturn(Optional.of(order));
+        doNothing().when(orderHelper).validateEmployeeRole(anyString());
+        doNothing().when(orderHelper).validateEmployeeAssignedToOrder(order, EMPLOYEE_ID);
+        doThrow(InvalidOrderStatusException.class).when(orderHelper).validateOrderIsReady(order);
+
+        assertThrows(InvalidOrderStatusException.class,
+                () -> orderUseCase.markOrderAsDelivered(orderId, EMPLOYEE_ID, EMPLOYEE_ROLE, VALID_CODE));
+
+        verify(orderPersistencePort, never()).updateOrder(any());
+    }
+
+    @Test
+    void markOrderAsDelivered_invalidCode_shouldThrowException() {
+        Long orderId = 1L;
+        OrderModel order = new OrderModel();
+        order.setId(orderId);
+        order.setStatus(OrderStatus.LISTO);
+        order.setAssignedEmployeeId(EMPLOYEE_ID);
+
+        when(orderPersistencePort.getOrderById(orderId)).thenReturn(Optional.of(order));
+        doNothing().when(orderHelper).validateEmployeeRole(anyString());
+        doNothing().when(orderHelper).validateEmployeeAssignedToOrder(order, EMPLOYEE_ID);
+        doNothing().when(orderHelper).validateOrderIsReady(order);
+        doThrow(InvalidVerificationCodeException.class).when(orderHelper).validateVerificationCode(order, "wrong_code");
+
+        assertThrows(InvalidVerificationCodeException.class,
+                () -> orderUseCase.markOrderAsDelivered(orderId, EMPLOYEE_ID, EMPLOYEE_ROLE, "wrong_code"));
+
+        verify(orderPersistencePort, never()).updateOrder(any());
     }
 }
