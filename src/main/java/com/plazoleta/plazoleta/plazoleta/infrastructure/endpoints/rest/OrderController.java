@@ -5,6 +5,7 @@ import com.plazoleta.plazoleta.plazoleta.application.dto.request.CreateOrderRequ
 import com.plazoleta.plazoleta.plazoleta.application.dto.request.ListOrderRequest;
 import com.plazoleta.plazoleta.plazoleta.application.dto.request.UpdateOrderRequest;
 import com.plazoleta.plazoleta.plazoleta.application.dto.response.CreateOrderResponse;
+import com.plazoleta.plazoleta.plazoleta.application.dto.response.DeleteOrderResponse;
 import com.plazoleta.plazoleta.plazoleta.application.dto.response.PagedOrderResponse;
 import com.plazoleta.plazoleta.plazoleta.application.dto.response.UpdateOrderStatusResponse;
 import com.plazoleta.plazoleta.plazoleta.application.services.OrderService;
@@ -63,4 +64,15 @@ public class OrderController {
         return ResponseEntity.ok(response);
     }
 
+    @CancelOrderDocs
+    @PutMapping(ControllerConstants.CANCEL_ORDER_PATH)
+    @PreAuthorize(ControllerConstants.ROLE_CLIENT)
+    public ResponseEntity<DeleteOrderResponse> cancelOrder(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader,
+            @PathVariable Long orderId
+    ) {
+        String token = authorizationHeader.replace(ControllerConstants.BEARER_PREFIX, "");
+        DeleteOrderResponse response = orderService.cancelOrder(orderId, token);
+        return ResponseEntity.ok(response);
+    }
 }

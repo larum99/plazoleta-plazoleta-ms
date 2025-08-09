@@ -40,4 +40,6 @@ public class ControllerConstants {
     public static final String ROLE_EMPLOYEE = "hasRole('EMPLEADO')";
 
     public static final String UPDATE_ORDER_STATUS_PATH = "/orders/{orderId}/status";
+
+    public static final String CANCEL_ORDER_PATH = "/orders/{orderId}/cancel";
 }

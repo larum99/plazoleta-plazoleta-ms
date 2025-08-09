@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.lang.annotation.*;
 
 import static com.plazoleta.plazoleta.commons.configurations.swagger.docs.SwaggerConstants.*;
+import static com.plazoleta.plazoleta.commons.configurations.swagger.examples.OrderSwaggerExamples.CANCEL_ORDER_SUCCESS_RESPONSE;
 
 public class OrderControllerDocs {
 
@@ -80,7 +81,7 @@ public class OrderControllerDocs {
                             mediaType = APPLICATION_JSON,
                             examples = @ExampleObject(
                                     name = EXAMPLE_NAME_LIST,
-                                    summary = "Listado de pedidos", // Puedes crear una constante si deseas
+                                    summary = SUMMARY_ORDER_LIST,
                                     value = OrderSwaggerExamples.ORDER_LIST_RESPONSE
                             )
                     )
@@ -158,6 +159,45 @@ public class OrderControllerDocs {
             )
     })
     public @interface UpdateOrderDocs {
+    }
+
+    @Target({ElementType.METHOD})
+    @Retention(RetentionPolicy.RUNTIME)
+    @Operation(
+            summary = SUMMARY_CANCEL_ORDER,
+            description = DESCRIPTION_CANCEL_ORDER
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = OK,
+                    description = DESCRIPTION_CANCEL_ORDER_SUCCESS,
+                    content = @Content(
+                            mediaType = APPLICATION_JSON,
+                            schema = @Schema(implementation = com.plazoleta.plazoleta.plazoleta.application.dto.response.DeleteOrderResponse.class),
+                            examples = @ExampleObject(
+                                    name = EXAMPLE_NAME_CANCEL_ORDER_SUCCESS,
+                                    summary = SUMMARY_CANCEL_ORDER_SUCCESS,
+                                    value = CANCEL_ORDER_SUCCESS_RESPONSE
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = BAD_REQUEST,
+                    description = DESCRIPTION_CANCEL_ORDER_BAD_REQUEST,
+                    content = @Content(mediaType = APPLICATION_JSON)
+            ),
+            @ApiResponse(
+                    responseCode = UNAUTHORIZED,
+                    description = DESCRIPTION_CANCEL_ORDER_UNAUTHORIZED,
+                    content = @Content(mediaType = APPLICATION_JSON)
+            ),
+            @ApiResponse(
+                    responseCode = NOT_FOUND,
+                    description = DESCRIPTION_CANCEL_ORDER_NOT_FOUND,
+                    content = @Content(mediaType = APPLICATION_JSON)
+            )
+    })
+    public @interface CancelOrderDocs {
     }
 
 }

@@ -16,4 +16,6 @@ public class FeignConstants {
     public static final String MESSAGING_NAME_SERVICE = "messaging-service";
     public static final String MESSAGING_URL_SERVICE = "${microservices.messaging.url}";
     public static final String SEND_ORDER_READY_MESSAGE_PATH = "/api/v1/messaging/send-code";
+    public static final String SEND_CANNOT_CANCEL_MESSAGE_PATH = "/api/v1/messaging/cannot-cancel";
+
 }

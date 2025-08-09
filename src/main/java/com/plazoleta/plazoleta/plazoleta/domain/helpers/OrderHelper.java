@@ -129,4 +129,9 @@ public class OrderHelper {
         }
     }
 
+    public void validateOrderBelongsToClient(OrderModel order, Long clientId) {
+        if (!clientId.equals(order.getClientId())) {
+            throw new UnauthorizedUserException();
+        }
+    }
 }

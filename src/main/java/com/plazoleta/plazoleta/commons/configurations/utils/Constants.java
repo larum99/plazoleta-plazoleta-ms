@@ -14,4 +14,5 @@ public class Constants {
     public static final String UPDATE_ORDER_STATUS_SUCCESS_MESSAGE = "El pedido fue actualizado con éxito.";
     public static final String ERROR_UNSUPPORTED_ORDER_STATUS = "Estado de orden no soportado: ";
     public static final String ERROR_INVALID_ORDER_STATUS = "Estado de orden inválido: ";
+    public static final String CANCEL_ORDER_SUCCESS_MESSAGE = "Pedido cancelado con éxito";
 }

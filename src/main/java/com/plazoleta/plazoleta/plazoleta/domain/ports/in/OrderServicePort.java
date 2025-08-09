@@ -10,4 +10,5 @@ public interface OrderServicePort {
     void assignOrderAndChangeStatus(Long orderId, Long employeeId, String role, String status);
     void markOrderAsReady(Long orderId, Long employeeId, String role);
     void markOrderAsDelivered(Long orderId, Long employeeId, String role, String code);
+    void cancelOrder(Long orderId, Long clientId, String role);
 }

@@ -11,7 +11,9 @@ public class SwaggerConstants {
     public static final String CREATED = "201";
     public static final String OK = "200";
     public static final String BAD_REQUEST = "400";
+    public static final String UNAUTHORIZED = "401";
     public static final String NOT_FOUND = "404";
+    public static final String FORBIDDEN = "403";
 
     public static final String EXAMPLE_NAME_SUCCESS = "Respuesta exitosa";
     public static final String EXAMPLE_NAME_ERROR = "Error";
@@ -64,8 +66,6 @@ public class SwaggerConstants {
     public static final String DESCRIPTION_LIST_DISHES = "Obtiene una lista de platos según filtros por restaurante y categoría, incluyendo paginación y ordenamiento.";
     public static final String DESCRIPTION_LIST_DISHES_SUCCESS = "Listado de platos obtenido exitosamente.";
     public static final String DESCRIPTION_BAD_REQUEST_MISSING_FILTERS = "Faltan filtros requeridos como restaurantId o categoryId.";
-
-    //public static final String EXAMPLE_NAME_LIST = "dishListExample";
     public static final String SUMMARY_DISH_LIST = "Ejemplo de listado de platos";
     public static final String SUMMARY_MISSING_FILTERS = "Faltan filtros obligatorios";
 
@@ -77,6 +77,7 @@ public class SwaggerConstants {
     public static final String DESCRIPTION_ORDER_VALIDATION_ERROR = "Datos inválidos o platos no pertenecen al restaurante";
     public static final String SUMMARY_ORDER_INVALID = "Pedido inválido";
 
+    public static final String SUMMARY_ORDER_LIST = "Listado de pedidos";
     public static final String SUMMARY_LIST_ORDERS = "Listar pedidos filtrados y paginados";
     public static final String DESCRIPTION_LIST_ORDERS = "Obtiene una lista de pedidos del restaurante del empleado filtrados por estado, con paginación.";
     public static final String DESCRIPTION_ORDER_LISTED = "Pedidos listados correctamente";
@@ -96,4 +97,19 @@ public class SwaggerConstants {
     public static final String EXAMPLE_NAME_UPDATE_ENTREGADO = "Actualizar a estado ENTREGADO";
     public static final String SUMMARY_UPDATE_NO_CODE = "Ejemplo sin código de verificación";
     public static final String SUMMARY_UPDATE_WITH_CODE = "Ejemplo con código de verificación para entrega";
+
+    public static final String SUMMARY_CANCEL_ORDER = "Cancelar pedido";
+    public static final String DESCRIPTION_CANCEL_ORDER = "Permite que un cliente cancele un pedido solo si está en estado PENDIENTE.";
+
+    public static final String DESCRIPTION_CANCEL_ORDER_SUCCESS = "Pedido cancelado exitosamente.";
+    public static final String EXAMPLE_NAME_CANCEL_ORDER_SUCCESS = "CancelOrderSuccess";
+    public static final String SUMMARY_CANCEL_ORDER_SUCCESS = "Respuesta exitosa de cancelación";
+
+    public static final String DESCRIPTION_CANCEL_ORDER_BAD_REQUEST = "El pedido no está en estado pendiente o la cancelación no es válida.";
+    public static final String DESCRIPTION_CANCEL_ORDER_UNAUTHORIZED = "Usuario no autorizado para realizar esta acción.";
+    public static final String DESCRIPTION_CANCEL_ORDER_NOT_FOUND = "Pedido no encontrado.";
+
+    public static final String DESCRIPTION_UNAUTHORIZED = "No autorizado para acceder a este recurso.";
+    public static final String DESCRIPTION_FORBIDDEN = "Acceso prohibido.";
+    public static final String DESCRIPTION_INTERNAL_SERVER_ERROR = "Error interno del servidor.";
 }

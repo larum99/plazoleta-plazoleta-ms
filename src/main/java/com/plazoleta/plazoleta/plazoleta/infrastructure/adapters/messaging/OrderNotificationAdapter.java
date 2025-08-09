@@ -24,4 +24,11 @@ public class OrderNotificationAdapter implements OrderNotificationPort {
         CodeVerificationResponse response = messagingFeignClient.sendOrderReadyMessage(new PhoneNumberRequest(phoneNumber));
         return response.codeVerification();
     }
+
+    @Override
+    public void notifyClientCannotCancel(OrderModel order) {
+        UserResponse user = userFeignClient.getUserById(order.getClientId());
+        String phoneNumber = user.phoneNumber();
+        messagingFeignClient.sendCannotCancelMessage(new PhoneNumberRequest(phoneNumber));
+    }
 }

@@ -49,6 +49,7 @@ class OrderHelperTest {
     private static final Long EMPLOYEE_ID = 20L;
     private static final Long ANOTHER_EMPLOYEE_ID = 21L;
     private static final String VERIFICATION_CODE = "12345";
+    private static final Long ANOTHER_CLIENT_ID = 2L;
 
     private RestaurantModel restaurantModel;
     private DishModel dishModel;
@@ -302,5 +303,17 @@ class OrderHelperTest {
     void validateVerificationCode_whenOrderCodeIsNull_shouldThrowInvalidVerificationCodeException() {
         orderModel.setVerificationCode(null);
         assertThrows(InvalidVerificationCodeException.class, () -> orderHelper.validateVerificationCode(orderModel, VERIFICATION_CODE));
+    }
+
+    @Test
+    void validateOrderBelongsToClient_withMatchingClientId_shouldNotThrow() {
+        orderModel.setClientId(CLIENT_ID);
+        assertDoesNotThrow(() -> orderHelper.validateOrderBelongsToClient(orderModel, CLIENT_ID));
+    }
+
+    @Test
+    void validateOrderBelongsToClient_withNonMatchingClientId_shouldThrowUnauthorizedUserException() {
+        orderModel.setClientId(ANOTHER_CLIENT_ID);
+        assertThrows(UnauthorizedUserException.class, () -> orderHelper.validateOrderBelongsToClient(orderModel, CLIENT_ID));
     }
 }

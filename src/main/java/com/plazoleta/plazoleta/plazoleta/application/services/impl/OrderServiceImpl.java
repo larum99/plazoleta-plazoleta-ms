@@ -4,10 +4,7 @@ import com.plazoleta.plazoleta.commons.configurations.utils.Constants;
 import com.plazoleta.plazoleta.plazoleta.application.dto.request.CreateOrderRequest;
 import com.plazoleta.plazoleta.plazoleta.application.dto.request.ListOrderRequest;
 import com.plazoleta.plazoleta.plazoleta.application.dto.request.UpdateOrderRequest;
-import com.plazoleta.plazoleta.plazoleta.application.dto.response.CreateOrderResponse;
-import com.plazoleta.plazoleta.plazoleta.application.dto.response.OrderResponse;
-import com.plazoleta.plazoleta.plazoleta.application.dto.response.PagedOrderResponse;
-import com.plazoleta.plazoleta.plazoleta.application.dto.response.UpdateOrderStatusResponse;
+import com.plazoleta.plazoleta.plazoleta.application.dto.response.*;
 import com.plazoleta.plazoleta.plazoleta.application.mappers.OrderCriteriaMapper;
 import com.plazoleta.plazoleta.plazoleta.application.mappers.OrderDtoMapper;
 import com.plazoleta.plazoleta.plazoleta.application.services.OrderService;
@@ -16,6 +13,7 @@ import com.plazoleta.plazoleta.plazoleta.domain.model.OrderDishModel;
 import com.plazoleta.plazoleta.plazoleta.domain.model.OrderModel;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.in.OrderServicePort;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.in.RoleValidatorPort;
+import com.plazoleta.plazoleta.plazoleta.domain.utils.DomainConstants;
 import com.plazoleta.plazoleta.plazoleta.domain.utils.OrderStatus;
 import com.plazoleta.plazoleta.plazoleta.domain.utils.PageResult;
 import lombok.RequiredArgsConstructor;
@@ -101,4 +99,12 @@ public class OrderServiceImpl implements OrderService {
         return new UpdateOrderStatusResponse(Constants.UPDATE_ORDER_STATUS_SUCCESS_MESSAGE, LocalDateTime.now());
     }
 
+    @Override
+    public DeleteOrderResponse cancelOrder(Long orderId, String token) {
+        Long clientId = roleValidatorPort.extractUserId(token);
+        String role = roleValidatorPort.extractRole(token);
+
+        orderServicePort.cancelOrder(orderId, clientId, role);
+        return new DeleteOrderResponse(Constants.CANCEL_ORDER_SUCCESS_MESSAGE, LocalDateTime.now());
+    }
 }

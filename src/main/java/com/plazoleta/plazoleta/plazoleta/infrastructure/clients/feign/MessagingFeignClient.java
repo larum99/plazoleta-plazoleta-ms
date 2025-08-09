@@ -13,5 +13,6 @@ public interface MessagingFeignClient {
     @PostMapping(FeignConstants.SEND_ORDER_READY_MESSAGE_PATH)
     CodeVerificationResponse sendOrderReadyMessage(@RequestBody PhoneNumberRequest request);
 
-
+    @PostMapping(FeignConstants.SEND_CANNOT_CANCEL_MESSAGE_PATH)
+    void sendCannotCancelMessage(@RequestBody PhoneNumberRequest request);
 }

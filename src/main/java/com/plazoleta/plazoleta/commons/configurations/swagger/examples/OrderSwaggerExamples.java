@@ -77,7 +77,6 @@ public class OrderSwaggerExamples {
         }
     """;
 
-
     public static final String ORDER_UPDATED_RESPONSE = """
         {
             "message": "Pedido actualizado correctamente.",
@@ -97,4 +96,10 @@ public class OrderSwaggerExamples {
            }
     """;
 
+    public static final String CANCEL_ORDER_SUCCESS_RESPONSE = """
+    {
+      "message": "Pedido cancelado con éxito",
+      "timestamp": "2025-08-08T14:30:00"
+    }
+""";
 }

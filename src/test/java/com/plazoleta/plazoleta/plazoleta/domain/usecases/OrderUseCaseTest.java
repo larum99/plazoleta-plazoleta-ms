@@ -441,4 +441,74 @@ class OrderUseCaseTest {
 
         verify(orderPersistencePort, never()).updateOrder(any());
     }
+
+    @Test
+    void cancelOrder_withValidDataAndPendingStatus_shouldUpdateToCanceled() {
+        Long orderId = 1L;
+        OrderModel order = new OrderModel();
+        order.setId(orderId);
+        order.setClientId(CLIENT_ID);
+        order.setStatus(OrderStatus.PENDIENTE);
+
+        when(orderPersistencePort.getOrderById(orderId)).thenReturn(Optional.of(order));
+        doNothing().when(orderHelper).validateRole(CLIENT_ROLE);
+        doNothing().when(orderHelper).validateOrderBelongsToClient(order, CLIENT_ID);
+
+        orderUseCase.cancelOrder(orderId, CLIENT_ID, CLIENT_ROLE);
+
+        assertEquals(OrderStatus.CANCELADO, order.getStatus());
+        verify(orderPersistencePort).updateOrder(order);
+        verify(orderNotificationPort, never()).notifyClientCannotCancel(any());
+    }
+
+    @Test
+    void cancelOrder_withNonPendingStatus_shouldThrowExceptionAndNotify() {
+        Long orderId = 1L;
+        OrderModel order = new OrderModel();
+        order.setId(orderId);
+        order.setClientId(CLIENT_ID);
+        order.setStatus(OrderStatus.EN_PREPARACION);
+
+        when(orderPersistencePort.getOrderById(orderId)).thenReturn(Optional.of(order));
+        doNothing().when(orderHelper).validateRole(CLIENT_ROLE);
+        doNothing().when(orderHelper).validateOrderBelongsToClient(order, CLIENT_ID);
+
+        assertThrows(InvalidOrderStatusException.class,
+                () -> orderUseCase.cancelOrder(orderId, CLIENT_ID, CLIENT_ROLE));
+
+        verify(orderNotificationPort).notifyClientCannotCancel(order);
+        verify(orderPersistencePort, never()).updateOrder(any());
+    }
+
+    @Test
+    void cancelOrder_orderNotFound_shouldThrowException() {
+        Long orderId = 999L;
+
+        when(orderPersistencePort.getOrderById(orderId)).thenReturn(Optional.empty());
+        doNothing().when(orderHelper).validateRole(CLIENT_ROLE);
+
+        assertThrows(OrderNotFoundException.class,
+                () -> orderUseCase.cancelOrder(orderId, CLIENT_ID, CLIENT_ROLE));
+
+        verify(orderPersistencePort, never()).updateOrder(any());
+    }
+
+    @Test
+    void cancelOrder_clientDoesNotOwnOrder_shouldThrowException() {
+        Long orderId = 1L;
+        Long otherClientId = 99L;
+        OrderModel order = new OrderModel();
+        order.setId(orderId);
+        order.setClientId(otherClientId);
+        order.setStatus(OrderStatus.PENDIENTE);
+
+        when(orderPersistencePort.getOrderById(orderId)).thenReturn(Optional.of(order));
+        doNothing().when(orderHelper).validateRole(CLIENT_ROLE);
+        doThrow(UnauthorizedUserException.class).when(orderHelper).validateOrderBelongsToClient(order, CLIENT_ID);
+
+        assertThrows(UnauthorizedUserException.class,
+                () -> orderUseCase.cancelOrder(orderId, CLIENT_ID, CLIENT_ROLE));
+
+        verify(orderPersistencePort, never()).updateOrder(any());
+    }
 }

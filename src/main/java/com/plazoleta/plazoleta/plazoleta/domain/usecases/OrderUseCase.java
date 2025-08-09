@@ -1,7 +1,9 @@
 package com.plazoleta.plazoleta.plazoleta.domain.usecases;
 
 import com.plazoleta.plazoleta.plazoleta.domain.criteria.OrderListCriteria;
+import com.plazoleta.plazoleta.plazoleta.domain.exceptions.InvalidOrderStatusException;
 import com.plazoleta.plazoleta.plazoleta.domain.exceptions.OrderNotFoundException;
+import com.plazoleta.plazoleta.plazoleta.domain.exceptions.UnauthorizedUserException;
 import com.plazoleta.plazoleta.plazoleta.domain.helpers.OrderHelper;
 import com.plazoleta.plazoleta.plazoleta.domain.model.OrderModel;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.in.OrderServicePort;
@@ -108,6 +110,24 @@ public class OrderUseCase implements OrderServicePort {
         orderHelper.validateVerificationCode(order, code);
 
         order.setStatus(OrderStatus.ENTREGADO);
+        orderPersistencePort.updateOrder(order);
+    }
+
+    @Override
+    public void cancelOrder(Long orderId, Long userId, String role) {
+        orderHelper.validateRole(role);
+
+        OrderModel order = orderPersistencePort.getOrderById(orderId)
+                .orElseThrow(OrderNotFoundException::new);
+
+        orderHelper.validateOrderBelongsToClient(order, userId);
+
+        if (!OrderStatus.PENDIENTE.equals(order.getStatus())) {
+            orderNotificationPort.notifyClientCannotCancel(order);
+            throw new InvalidOrderStatusException();
+        }
+
+        order.setStatus(OrderStatus.CANCELADO);
         orderPersistencePort.updateOrder(order);
     }
 }
