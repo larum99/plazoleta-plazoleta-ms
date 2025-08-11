@@ -30,14 +30,15 @@ public class OrderPersistenceAdapter implements OrderPersistencePort {
     private final OrderEntityMapper orderEntityMapper;
 
     @Override
-    public void saveOrder(OrderModel orderModel) {
+    public OrderModel  saveOrder(OrderModel orderModel) {
         OrderEntity entity = orderEntityMapper.modelToEntity(orderModel);
 
         if (entity.getDishes() != null) {
             entity.getDishes().forEach(dish -> dish.setOrder(entity));
         }
 
-        orderRepository.save(entity);
+        OrderEntity savedEntity = orderRepository.save(entity);
+        return orderEntityMapper.entityToModel(savedEntity);
     }
 
     @Override
@@ -79,13 +80,15 @@ public class OrderPersistenceAdapter implements OrderPersistencePort {
     }
 
     @Override
-    public void updateOrder(OrderModel orderModel) {
+    public OrderModel  updateOrder(OrderModel orderModel) {
         OrderEntity entity = orderEntityMapper.modelToEntity(orderModel);
 
         if (entity.getDishes() != null) {
             entity.getDishes().forEach(dish -> dish.setOrder(entity));
         }
-        orderRepository.save(entity);
+
+        OrderEntity updatedEntity = orderRepository.save(entity);
+        return orderEntityMapper.entityToModel(updatedEntity);
     }
 
     @Override

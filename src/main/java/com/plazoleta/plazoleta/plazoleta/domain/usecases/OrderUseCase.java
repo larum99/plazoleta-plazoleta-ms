@@ -3,13 +3,13 @@ package com.plazoleta.plazoleta.plazoleta.domain.usecases;
 import com.plazoleta.plazoleta.plazoleta.domain.criteria.OrderListCriteria;
 import com.plazoleta.plazoleta.plazoleta.domain.exceptions.InvalidOrderStatusException;
 import com.plazoleta.plazoleta.plazoleta.domain.exceptions.OrderNotFoundException;
-import com.plazoleta.plazoleta.plazoleta.domain.exceptions.UnauthorizedUserException;
 import com.plazoleta.plazoleta.plazoleta.domain.helpers.OrderHelper;
 import com.plazoleta.plazoleta.plazoleta.domain.model.OrderModel;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.in.OrderServicePort;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.out.*;
 import com.plazoleta.plazoleta.plazoleta.domain.utils.OrderStatus;
 import com.plazoleta.plazoleta.plazoleta.domain.utils.PageResult;
+import com.plazoleta.plazoleta.plazoleta.infrastructure.clients.feign.dto.request.TraceabilityLogRequest;
 
 import java.time.LocalDateTime;
 
@@ -17,6 +17,7 @@ public class OrderUseCase implements OrderServicePort {
 
     private final OrderPersistencePort orderPersistencePort;
     private final OrderNotificationPort orderNotificationPort;
+    private final OrderTraceabilityPort orderTraceabilityPort;
     private final OrderHelper orderHelper;
 
     public OrderUseCase(
@@ -24,10 +25,12 @@ public class OrderUseCase implements OrderServicePort {
             DishPersistencePort dishPersistencePort,
             RestaurantPersistencePort restaurantPersistencePort,
             EmployeeRestaurantPersistencePort employeeRestaurantPersistencePort,
-            OrderNotificationPort orderNotificationPort
+            OrderNotificationPort orderNotificationPort,
+            OrderTraceabilityPort orderTraceabilityPort
     ) {
         this.orderPersistencePort = orderPersistencePort;
         this.orderNotificationPort = orderNotificationPort;
+        this.orderTraceabilityPort = orderTraceabilityPort;
         this.orderHelper = new OrderHelper(orderPersistencePort, dishPersistencePort, restaurantPersistencePort, employeeRestaurantPersistencePort);
     }
 
@@ -45,7 +48,9 @@ public class OrderUseCase implements OrderServicePort {
         orderModel.setStatus(OrderStatus.PENDIENTE);
         orderModel.setDate(LocalDateTime.now());
 
-        orderPersistencePort.saveOrder(orderModel);
+        orderModel = orderPersistencePort.saveOrder(orderModel);
+
+        sendTraceLog(orderModel, OrderStatus.PENDIENTE.name(), clientId, "Pedido creado");
     }
 
     @Override
@@ -77,7 +82,9 @@ public class OrderUseCase implements OrderServicePort {
         order.setAssignedEmployeeId(employeeId);
         order.setStatus(OrderStatus.EN_PREPARACION);
 
-        orderPersistencePort.saveOrder(order);
+        order = orderPersistencePort.saveOrder(order);
+
+        sendTraceLog(order, OrderStatus.EN_PREPARACION.name(), employeeId, "Pedido asignado y en preparación");
     }
 
     @Override
@@ -95,7 +102,9 @@ public class OrderUseCase implements OrderServicePort {
         String code = orderNotificationPort.notifyClientOrderReady(order);
         order.setVerificationCode(code);
 
-        orderPersistencePort.updateOrder(order);
+        order = orderPersistencePort.updateOrder(order);
+
+        sendTraceLog(order, OrderStatus.LISTO.name(), employeeId, "Pedido listo para entrega");
     }
 
     @Override
@@ -110,7 +119,9 @@ public class OrderUseCase implements OrderServicePort {
         orderHelper.validateVerificationCode(order, code);
 
         order.setStatus(OrderStatus.ENTREGADO);
-        orderPersistencePort.updateOrder(order);
+        order = orderPersistencePort.updateOrder(order);
+
+        sendTraceLog(order, OrderStatus.ENTREGADO.name(), employeeId, "Pedido entregado");
     }
 
     @Override
@@ -128,6 +139,20 @@ public class OrderUseCase implements OrderServicePort {
         }
 
         order.setStatus(OrderStatus.CANCELADO);
-        orderPersistencePort.updateOrder(order);
+        order = orderPersistencePort.updateOrder(order);
+
+        sendTraceLog(order, OrderStatus.CANCELADO.name(), userId, "Pedido cancelado por el cliente");
+    }
+
+    private void sendTraceLog(OrderModel order, String newStatus, Long changedBy, String description) {
+        TraceabilityLogRequest traceRequest = new TraceabilityLogRequest();
+        traceRequest.setOrderId(order.getId());
+        traceRequest.setStatus(newStatus);
+        traceRequest.setChangedAt(LocalDateTime.now());
+        traceRequest.setChangedBy(changedBy);
+        traceRequest.setClientId(order.getClientId());
+        traceRequest.setDescription(description);
+
+        orderTraceabilityPort.sendTraceabilityLog(traceRequest);
     }
 }

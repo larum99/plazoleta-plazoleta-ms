@@ -1,4 +1,4 @@
-package com.plazoleta.plazoleta.plazoleta.infrastructure.adapters.messaging;
+package com.plazoleta.plazoleta.plazoleta.infrastructure.adapters.feign;
 
 import com.plazoleta.plazoleta.plazoleta.domain.model.OrderModel;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.out.OrderNotificationPort;

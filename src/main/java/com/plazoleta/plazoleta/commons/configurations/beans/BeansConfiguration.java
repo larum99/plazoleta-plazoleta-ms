@@ -9,8 +9,9 @@ import com.plazoleta.plazoleta.plazoleta.domain.usecases.DishUseCase;
 import com.plazoleta.plazoleta.plazoleta.domain.usecases.EmployeeRestaurantUseCase;
 import com.plazoleta.plazoleta.plazoleta.domain.usecases.OrderUseCase;
 import com.plazoleta.plazoleta.plazoleta.domain.usecases.RestaurantUseCase;
+import com.plazoleta.plazoleta.plazoleta.infrastructure.adapters.feign.OrderTraceabilityAdapter;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.adapters.feign.UserValidationAdapter;
-import com.plazoleta.plazoleta.plazoleta.infrastructure.adapters.messaging.OrderNotificationAdapter;
+import com.plazoleta.plazoleta.plazoleta.infrastructure.adapters.feign.OrderNotificationAdapter;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.adapters.persistence.*;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.adapters.security.RoleValidatorAdapter;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.clients.feign.MessagingFeignClient;
@@ -42,6 +43,8 @@ public class BeansConfiguration {
 
     private final EmployeeRestaurantRepository employeeRestaurantRepository;
     private final EmployeeRestaurantEntityMapper employeeRestaurantEntityMapper;
+
+    private final OrderTraceabilityAdapter orderTraceabilityAdapter;
 
     @Bean
     public RestaurantUseCase restaurantUseCase() {
@@ -101,7 +104,8 @@ public class BeansConfiguration {
                 dishPersistencePort(),
                 restaurantPersistencePort(),
                 employeeRestaurantPersistencePort(),
-                orderNotificationPort()
+                orderNotificationPort(),
+                orderTraceabilityPort()
         );
     }
 
@@ -133,4 +137,8 @@ public class BeansConfiguration {
         return new OrderNotificationAdapter(messagingFeignClient, userFeignClient);
     }
 
+    @Bean
+    public OrderTraceabilityPort orderTraceabilityPort() {
+        return orderTraceabilityAdapter;
+    }
 }

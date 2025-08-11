@@ -19,6 +19,8 @@ microservices:
     url: http://localhost:8090
   messaging:
     url: http://localhost:8092
+  traceability:
+    url: http://localhost:8093
 
 security:
   jwt:

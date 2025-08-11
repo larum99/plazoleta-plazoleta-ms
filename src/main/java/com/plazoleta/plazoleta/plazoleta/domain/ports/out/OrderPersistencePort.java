@@ -7,9 +7,9 @@ import com.plazoleta.plazoleta.plazoleta.domain.utils.PageResult;
 import java.util.Optional;
 
 public interface OrderPersistencePort {
-    void saveOrder(OrderModel orderModel);
+    OrderModel  saveOrder(OrderModel orderModel);
     Optional<OrderModel> getActiveOrderByClientId(Long clientId);
     PageResult<OrderModel> getOrdersByCriteria(OrderListCriteria criteria);
     Optional<OrderModel> getOrderById(Long orderId);
-    void updateOrder(OrderModel orderModel);
+    OrderModel  updateOrder(OrderModel orderModel);
 }
