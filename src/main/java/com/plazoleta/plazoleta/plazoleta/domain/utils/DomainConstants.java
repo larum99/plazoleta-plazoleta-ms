@@ -36,4 +36,10 @@ public class DomainConstants {
     public static final String ROLE_CLIENT = "CLIENTE";
 
    public static final String ROLE_EMPLOYEE = "EMPLEADO";
+
+    public static final String ORDER_CREATED = "Pedido creado";
+    public static final String ORDER_ASSIGNED_PREPARATION = "Pedido asignado y en preparación";
+    public static final String ORDER_READY = "Pedido listo para entrega";
+    public static final String ORDER_DELIVERED = "Pedido entregado";
+    public static final String ORDER_CANCELLED = "Pedido cancelado por el cliente";
 }

@@ -42,4 +42,14 @@ public class ControllerConstants {
     public static final String UPDATE_ORDER_STATUS_PATH = "/orders/{orderId}/status";
 
     public static final String CANCEL_ORDER_PATH = "/orders/{orderId}/cancel";
+
+    public static final String CANCEL_ORDERS_RESTAURANT_PATH = "/orders/restaurant";
+
+    public static final String SUMMARY_GET_ORDERS_BY_RESTAURANT = "Obtener IDs de pedidos por restaurante";
+    public static final String DESCRIPTION_GET_ORDERS_BY_RESTAURANT = "Permite al propietario de un restaurante obtener los IDs de los pedidos asociados a su restaurante.";
+    public static final String DESCRIPTION_GET_ORDERS_BY_RESTAURANT_SUCCESS = "IDs de pedidos obtenidos exitosamente.";
+    public static final String SUMMARY_GET_ORDERS_BY_RESTAURANT_SUCCESS = "Lista de IDs de pedidos";
+    public static final String DESCRIPTION_GET_ORDERS_BY_RESTAURANT_BAD_REQUEST = "Solicitud inválida para obtener IDs de pedidos por restaurante.";
+    public static final String DESCRIPTION_GET_ORDERS_BY_RESTAURANT_UNAUTHORIZED = "No autorizado para obtener IDs de pedidos por restaurante.";
+
 }

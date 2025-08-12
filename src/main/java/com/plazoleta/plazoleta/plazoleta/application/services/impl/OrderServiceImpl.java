@@ -13,7 +13,6 @@ import com.plazoleta.plazoleta.plazoleta.domain.model.OrderDishModel;
 import com.plazoleta.plazoleta.plazoleta.domain.model.OrderModel;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.in.OrderServicePort;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.in.RoleValidatorPort;
-import com.plazoleta.plazoleta.plazoleta.domain.utils.DomainConstants;
 import com.plazoleta.plazoleta.plazoleta.domain.utils.OrderStatus;
 import com.plazoleta.plazoleta.plazoleta.domain.utils.PageResult;
 import lombok.RequiredArgsConstructor;
@@ -106,5 +105,13 @@ public class OrderServiceImpl implements OrderService {
 
         orderServicePort.cancelOrder(orderId, clientId, role);
         return new DeleteOrderResponse(Constants.CANCEL_ORDER_SUCCESS_MESSAGE, LocalDateTime.now());
+    }
+
+    @Override
+    public List<Long> getOrderIdsByRestaurantId(Long restaurantId, String token) {
+        Long userId = roleValidatorPort.extractUserId(token);
+        String role = roleValidatorPort.extractRole(token);
+
+        return orderServicePort.getOrderIdsByRestaurantId(restaurantId, userId, role);
     }
 }

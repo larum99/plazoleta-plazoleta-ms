@@ -17,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(ControllerConstants.BASE_URL)
 @RequiredArgsConstructor
@@ -74,5 +76,17 @@ public class OrderController {
         String token = authorizationHeader.replace(ControllerConstants.BEARER_PREFIX, "");
         DeleteOrderResponse response = orderService.cancelOrder(orderId, token);
         return ResponseEntity.ok(response);
+    }
+
+    @GetOrdersByRestaurantDocs
+    @GetMapping(ControllerConstants.CANCEL_ORDERS_RESTAURANT_PATH)
+    @PreAuthorize(ControllerConstants.ROLE_PROPIETARIO)
+    public ResponseEntity<List<Long>> getOrderIdsByRestaurant(
+            @RequestParam Long restaurantId,
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader
+    ) {
+        String token = authorizationHeader.replace(ControllerConstants.BEARER_PREFIX, "");
+        List<Long> orderIds = orderService.getOrderIdsByRestaurantId(restaurantId, token);
+        return ResponseEntity.ok(orderIds);
     }
 }

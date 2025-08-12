@@ -44,7 +44,8 @@ class OrderUseCaseTest {
     private OrderNotificationPort orderNotificationPort;
     @Mock
     private OrderHelper orderHelper;
-
+    @Mock
+    private OrderTraceabilityPort orderTraceabilityPort;
     @InjectMocks
     private OrderUseCase orderUseCase;
 
@@ -83,7 +84,8 @@ class OrderUseCaseTest {
                 dishPersistencePort,
                 restaurantPersistencePort,
                 employeeRestaurantPersistencePort,
-                orderNotificationPort
+                orderNotificationPort,
+                orderTraceabilityPort
         );
         ReflectionTestUtils.setField(orderUseCase, "orderHelper", orderHelper);
     }
@@ -94,6 +96,8 @@ class OrderUseCaseTest {
         doNothing().when(orderHelper).validateNoActiveOrder(anyLong());
         doNothing().when(orderHelper).validateRestaurantExistence(anyLong());
         doNothing().when(orderHelper).validateDishesExistAndBelongToSameRestaurant(any(), anyLong());
+        when(orderPersistencePort.saveOrder(any(OrderModel.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        doNothing().when(orderTraceabilityPort).sendTraceabilityLog(any());
 
         orderUseCase.createOrder(validOrder, CLIENT_ID, CLIENT_ROLE);
 
@@ -104,6 +108,8 @@ class OrderUseCaseTest {
         assertEquals(CLIENT_ID, savedOrder.getClientId());
         assertEquals(OrderStatus.PENDIENTE, savedOrder.getStatus());
         assertNotNull(savedOrder.getDate());
+
+        verify(orderTraceabilityPort).sendTraceabilityLog(any());
     }
 
     @Test
@@ -208,18 +214,24 @@ class OrderUseCaseTest {
         order.setStatus(OrderStatus.PENDIENTE);
 
         when(orderPersistencePort.getOrderById(orderId)).thenReturn(Optional.of(order));
+        when(orderPersistencePort.saveOrder(any(OrderModel.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
         doNothing().when(orderHelper).validateEmployeeRole(anyString());
         doNothing().when(orderHelper).validateEmployeeCanAssignOrder(order, EMPLOYEE_ID);
         doNothing().when(orderHelper).validateOrderNotAssigned(order);
         doNothing().when(orderHelper).validateOrderIsPending(order);
         doNothing().when(orderHelper).validateNewStatusIsInPreparation(newStatus);
 
+        doNothing().when(orderTraceabilityPort).sendTraceabilityLog(any());
+
         orderUseCase.assignOrderAndChangeStatus(orderId, EMPLOYEE_ID, EMPLOYEE_ROLE, newStatus);
 
         assertEquals(OrderStatus.EN_PREPARACION, order.getStatus());
         assertEquals(EMPLOYEE_ID, order.getAssignedEmployeeId());
         verify(orderPersistencePort).saveOrder(order);
+        verify(orderTraceabilityPort).sendTraceabilityLog(any());
     }
+
 
     @Test
     void assignOrderAndChangeStatus_orderNotFound_shouldThrowException() {
@@ -285,16 +297,21 @@ class OrderUseCaseTest {
         order.setAssignedEmployeeId(EMPLOYEE_ID);
 
         when(orderPersistencePort.getOrderById(orderId)).thenReturn(Optional.of(order));
+        when(orderPersistencePort.updateOrder(any(OrderModel.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
         doNothing().when(orderHelper).validateEmployeeRole(anyString());
         doNothing().when(orderHelper).validateEmployeeAssignedToOrder(order, EMPLOYEE_ID);
         doNothing().when(orderHelper).validateOrderIsInPreparation(order);
+
         when(orderNotificationPort.notifyClientOrderReady(order)).thenReturn(VALID_CODE);
+        doNothing().when(orderTraceabilityPort).sendTraceabilityLog(any());
 
         orderUseCase.markOrderAsReady(orderId, EMPLOYEE_ID, EMPLOYEE_ROLE);
 
         assertEquals(OrderStatus.LISTO, order.getStatus());
         assertEquals(VALID_CODE, order.getVerificationCode());
         verify(orderPersistencePort).updateOrder(order);
+        verify(orderTraceabilityPort).sendTraceabilityLog(any());
     }
 
     @Test
@@ -361,15 +378,19 @@ class OrderUseCaseTest {
         order.setVerificationCode(VALID_CODE);
 
         when(orderPersistencePort.getOrderById(orderId)).thenReturn(Optional.of(order));
+        when(orderPersistencePort.updateOrder(any(OrderModel.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
         doNothing().when(orderHelper).validateEmployeeRole(anyString());
         doNothing().when(orderHelper).validateEmployeeAssignedToOrder(order, EMPLOYEE_ID);
         doNothing().when(orderHelper).validateOrderIsReady(order);
         doNothing().when(orderHelper).validateVerificationCode(order, VALID_CODE);
+        doNothing().when(orderTraceabilityPort).sendTraceabilityLog(any());
 
         orderUseCase.markOrderAsDelivered(orderId, EMPLOYEE_ID, EMPLOYEE_ROLE, VALID_CODE);
 
         assertEquals(OrderStatus.ENTREGADO, order.getStatus());
         verify(orderPersistencePort).updateOrder(order);
+        verify(orderTraceabilityPort).sendTraceabilityLog(any());
     }
 
     @Test
@@ -451,14 +472,18 @@ class OrderUseCaseTest {
         order.setStatus(OrderStatus.PENDIENTE);
 
         when(orderPersistencePort.getOrderById(orderId)).thenReturn(Optional.of(order));
+        when(orderPersistencePort.updateOrder(any(OrderModel.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
         doNothing().when(orderHelper).validateRole(CLIENT_ROLE);
         doNothing().when(orderHelper).validateOrderBelongsToClient(order, CLIENT_ID);
+        doNothing().when(orderTraceabilityPort).sendTraceabilityLog(any());
 
         orderUseCase.cancelOrder(orderId, CLIENT_ID, CLIENT_ROLE);
 
         assertEquals(OrderStatus.CANCELADO, order.getStatus());
         verify(orderPersistencePort).updateOrder(order);
         verify(orderNotificationPort, never()).notifyClientCannotCancel(any());
+        verify(orderTraceabilityPort).sendTraceabilityLog(any());
     }
 
     @Test

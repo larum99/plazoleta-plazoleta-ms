@@ -102,4 +102,6 @@ public class OrderSwaggerExamples {
       "timestamp": "2025-08-08T14:30:00"
     }
 """;
+
+    public static final String ORDER_IDS_BY_RESTAURANT_RESPONSE = "[101, 102, 103]";
 }

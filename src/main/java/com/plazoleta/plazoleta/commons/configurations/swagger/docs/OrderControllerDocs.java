@@ -15,6 +15,7 @@ import java.lang.annotation.*;
 
 import static com.plazoleta.plazoleta.commons.configurations.swagger.docs.SwaggerConstants.*;
 import static com.plazoleta.plazoleta.commons.configurations.swagger.examples.OrderSwaggerExamples.CANCEL_ORDER_SUCCESS_RESPONSE;
+import static com.plazoleta.plazoleta.plazoleta.infrastructure.utils.constants.ControllerConstants.*;
 
 public class OrderControllerDocs {
 
@@ -198,6 +199,39 @@ public class OrderControllerDocs {
             )
     })
     public @interface CancelOrderDocs {
+    }
+
+    @Target({ElementType.METHOD})
+    @Retention(RetentionPolicy.RUNTIME)
+    @Operation(
+            summary = SUMMARY_GET_ORDERS_BY_RESTAURANT,
+            description = DESCRIPTION_GET_ORDERS_BY_RESTAURANT
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = OK,
+                    description = DESCRIPTION_GET_ORDERS_BY_RESTAURANT_SUCCESS,
+                    content = @Content(
+                            mediaType = APPLICATION_JSON,
+                            examples = @ExampleObject(
+                                    name = EXAMPLE_NAME_SUCCESS,
+                                    summary = SUMMARY_GET_ORDERS_BY_RESTAURANT_SUCCESS,
+                                    value = OrderSwaggerExamples.ORDER_IDS_BY_RESTAURANT_RESPONSE
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = BAD_REQUEST,
+                    description = DESCRIPTION_GET_ORDERS_BY_RESTAURANT_BAD_REQUEST,
+                    content = @Content(mediaType = APPLICATION_JSON)
+            ),
+            @ApiResponse(
+                    responseCode = UNAUTHORIZED,
+                    description = DESCRIPTION_GET_ORDERS_BY_RESTAURANT_UNAUTHORIZED,
+                    content = @Content(mediaType = APPLICATION_JSON)
+            )
+    })
+    public @interface GetOrdersByRestaurantDocs {
     }
 
 }

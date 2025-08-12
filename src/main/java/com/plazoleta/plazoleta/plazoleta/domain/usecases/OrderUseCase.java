@@ -7,11 +7,13 @@ import com.plazoleta.plazoleta.plazoleta.domain.helpers.OrderHelper;
 import com.plazoleta.plazoleta.plazoleta.domain.model.OrderModel;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.in.OrderServicePort;
 import com.plazoleta.plazoleta.plazoleta.domain.ports.out.*;
+import com.plazoleta.plazoleta.plazoleta.domain.utils.DomainConstants;
 import com.plazoleta.plazoleta.plazoleta.domain.utils.OrderStatus;
 import com.plazoleta.plazoleta.plazoleta.domain.utils.PageResult;
 import com.plazoleta.plazoleta.plazoleta.infrastructure.clients.feign.dto.request.TraceabilityLogRequest;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class OrderUseCase implements OrderServicePort {
 
@@ -50,7 +52,7 @@ public class OrderUseCase implements OrderServicePort {
 
         orderModel = orderPersistencePort.saveOrder(orderModel);
 
-        sendTraceLog(orderModel, OrderStatus.PENDIENTE.name(), clientId, "Pedido creado");
+        sendTraceLog(orderModel, OrderStatus.PENDIENTE.name(), clientId, DomainConstants.ORDER_CREATED);
     }
 
     @Override
@@ -84,7 +86,7 @@ public class OrderUseCase implements OrderServicePort {
 
         order = orderPersistencePort.saveOrder(order);
 
-        sendTraceLog(order, OrderStatus.EN_PREPARACION.name(), employeeId, "Pedido asignado y en preparación");
+        sendTraceLog(order, OrderStatus.EN_PREPARACION.name(), employeeId, DomainConstants.ORDER_ASSIGNED_PREPARATION);
     }
 
     @Override
@@ -104,7 +106,7 @@ public class OrderUseCase implements OrderServicePort {
 
         order = orderPersistencePort.updateOrder(order);
 
-        sendTraceLog(order, OrderStatus.LISTO.name(), employeeId, "Pedido listo para entrega");
+        sendTraceLog(order, OrderStatus.LISTO.name(), employeeId, DomainConstants.ORDER_READY);
     }
 
     @Override
@@ -121,7 +123,7 @@ public class OrderUseCase implements OrderServicePort {
         order.setStatus(OrderStatus.ENTREGADO);
         order = orderPersistencePort.updateOrder(order);
 
-        sendTraceLog(order, OrderStatus.ENTREGADO.name(), employeeId, "Pedido entregado");
+        sendTraceLog(order, OrderStatus.ENTREGADO.name(), employeeId, DomainConstants.ORDER_DELIVERED);
     }
 
     @Override
@@ -141,8 +143,15 @@ public class OrderUseCase implements OrderServicePort {
         order.setStatus(OrderStatus.CANCELADO);
         order = orderPersistencePort.updateOrder(order);
 
-        sendTraceLog(order, OrderStatus.CANCELADO.name(), userId, "Pedido cancelado por el cliente");
+        sendTraceLog(order, OrderStatus.CANCELADO.name(), userId, DomainConstants.ORDER_CANCELLED);
     }
+
+    @Override
+    public List<Long> getOrderIdsByRestaurantId(Long restaurantId, Long employeeId, String role) {
+
+        return orderPersistencePort.findOrderIdsByRestaurantId(restaurantId);
+    }
+
 
     private void sendTraceLog(OrderModel order, String newStatus, Long changedBy, String description) {
         TraceabilityLogRequest traceRequest = new TraceabilityLogRequest();

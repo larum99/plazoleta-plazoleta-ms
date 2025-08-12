@@ -96,4 +96,11 @@ public class OrderPersistenceAdapter implements OrderPersistencePort {
         return orderRepository.findById(orderId)
                 .map(orderEntityMapper::entityToModel);
     }
+
+    @Override
+    public List<Long> findOrderIdsByRestaurantId(Long restaurantId) {
+
+        return orderRepository.findOrderIdsByRestaurantId(restaurantId);
+    }
+
 }
