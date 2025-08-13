@@ -44,4 +44,11 @@ public class RestaurantController {
         ListRestaurantRequest request = new ListRestaurantRequest(page, size);
         return ResponseEntity.ok(restaurantService.listRestaurants(request));
     }
+
+    @ExistsByIdDocs
+    @GetMapping(ControllerConstants.RESTAURANT_EXISTS_PATH)
+    public ResponseEntity<Boolean> existsById(@RequestParam Long restaurantId) {
+        boolean exists = restaurantService.existsById(restaurantId);
+        return ResponseEntity.ok(exists);
+    }
 }

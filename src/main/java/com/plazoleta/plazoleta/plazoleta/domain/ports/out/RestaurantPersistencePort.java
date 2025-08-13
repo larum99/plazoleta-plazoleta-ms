@@ -11,4 +11,5 @@ public interface RestaurantPersistencePort {
     RestaurantModel getRestaurantByName(String name);
     Optional<RestaurantModel> getRestaurantById(Long id);
     PageResult<RestaurantModel> listRestaurantsOrderedByName(int page, int size);
+    boolean existsById(Long id);
 }

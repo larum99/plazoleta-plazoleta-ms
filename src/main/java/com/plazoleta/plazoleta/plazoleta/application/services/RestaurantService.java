@@ -8,4 +8,5 @@ import com.plazoleta.plazoleta.plazoleta.application.dto.response.SaveRestaurant
 public interface RestaurantService {
     SaveRestaurantResponse saveRestaurant(SaveRestaurantRequest request, String token);
     PagedRestaurantResponse listRestaurants(ListRestaurantRequest request);
+    boolean existsById(Long restaurantId);
 }

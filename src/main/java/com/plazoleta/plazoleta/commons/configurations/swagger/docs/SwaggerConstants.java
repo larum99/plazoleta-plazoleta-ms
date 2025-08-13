@@ -112,4 +112,13 @@ public class SwaggerConstants {
     public static final String DESCRIPTION_UNAUTHORIZED = "No autorizado para acceder a este recurso.";
     public static final String DESCRIPTION_FORBIDDEN = "Acceso prohibido.";
     public static final String DESCRIPTION_INTERNAL_SERVER_ERROR = "Error interno del servidor.";
+
+    public static final String SUMMARY_EXISTS_BY_ID = "Verificar existencia de un restaurante por ID";
+    public static final String DESCRIPTION_EXISTS_BY_ID = "Consulta si un restaurante existe en la plataforma dado su ID.";
+    public static final String PARAM_RESTAURANT_ID_DESCRIPTION = "ID del restaurante a verificar";
+    public static final String PARAM_RESTAURANT_ID_EXAMPLE = "15";
+    public static final String DESCRIPTION_EXISTS_BY_ID_SUCCESS = "Restaurante existe o no";
+    public static final String DESCRIPTION_RESTAURANT_NOT_FOUND = "Restaurante no encontrado";
+    public static final String EXAMPLE_NAME_EXISTS_BY_ID = "Respuesta boolean de existencia";
+    public static final String SUMMARY_EXISTS_BY_ID_EXAMPLE = "Ejemplo de respuesta verdadera si el restaurante existe";
 }

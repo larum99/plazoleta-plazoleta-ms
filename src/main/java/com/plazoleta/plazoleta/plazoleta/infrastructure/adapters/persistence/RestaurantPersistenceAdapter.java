@@ -67,4 +67,9 @@ public class RestaurantPersistenceAdapter implements RestaurantPersistencePort {
                 entityPage.isLast()
         );
     }
+
+    @Override
+    public boolean existsById(Long id) {
+        return restaurantRepository.existsById(id);
+    }
 }

@@ -52,4 +52,6 @@ public class ControllerConstants {
     public static final String DESCRIPTION_GET_ORDERS_BY_RESTAURANT_BAD_REQUEST = "Solicitud inválida para obtener IDs de pedidos por restaurante.";
     public static final String DESCRIPTION_GET_ORDERS_BY_RESTAURANT_UNAUTHORIZED = "No autorizado para obtener IDs de pedidos por restaurante.";
 
+    public static final String RESTAURANT_EXISTS_PATH = "/exists";
+
 }

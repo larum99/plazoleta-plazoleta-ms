@@ -41,4 +41,10 @@ public class RestaurantUseCase implements RestaurantServicePort {
         helper.validatePageSize(size);
         return restaurantPersistencePort.listRestaurantsOrderedByName(page, size);
     }
+
+    @Override
+    public boolean existsById(Long restaurantId) {
+        return restaurantPersistencePort.existsById(restaurantId);
+    }
+
 }

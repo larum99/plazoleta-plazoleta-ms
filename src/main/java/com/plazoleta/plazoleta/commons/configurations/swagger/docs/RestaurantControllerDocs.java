@@ -4,6 +4,7 @@ import com.plazoleta.plazoleta.plazoleta.application.dto.request.SaveRestaurantR
 import com.plazoleta.plazoleta.plazoleta.application.dto.response.SaveRestaurantResponse;
 import com.plazoleta.plazoleta.commons.configurations.swagger.examples.RestaurantSwaggerExamples;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -87,4 +88,40 @@ public class RestaurantControllerDocs {
     @Retention(RetentionPolicy.RUNTIME)
     public @interface ListRestaurantsDocs {}
 
+    @Target({ElementType.METHOD})
+    @Retention(RetentionPolicy.RUNTIME)
+    @Operation(
+            summary = SUMMARY_EXISTS_BY_ID,
+            description = DESCRIPTION_EXISTS_BY_ID,
+            parameters = {
+                    @Parameter(
+                            name = "restaurantId",
+                            description = PARAM_RESTAURANT_ID_DESCRIPTION,
+                            required = true,
+                            example = PARAM_RESTAURANT_ID_EXAMPLE
+                    )
+            }
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = OK,
+                    description = DESCRIPTION_EXISTS_BY_ID_SUCCESS,
+                    content = @Content(
+                            mediaType = APPLICATION_JSON,
+                            schema = @Schema(type = "boolean"),
+                            examples = @ExampleObject(
+                                    name = EXAMPLE_NAME_EXISTS_BY_ID,
+                                    summary = SUMMARY_EXISTS_BY_ID_EXAMPLE,
+                                    value = "true"
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = NOT_FOUND,
+                    description = DESCRIPTION_RESTAURANT_NOT_FOUND,
+                    content = @Content
+            )
+    })
+    public @interface ExistsByIdDocs {
+    }
 }

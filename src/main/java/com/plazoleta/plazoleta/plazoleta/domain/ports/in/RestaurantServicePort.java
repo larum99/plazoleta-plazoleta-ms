@@ -6,5 +6,6 @@ import com.plazoleta.plazoleta.plazoleta.domain.utils.PageResult;
 public interface RestaurantServicePort {
     void createRestaurant(RestaurantModel restaurantModel, String role);
     PageResult<RestaurantModel> listRestaurants(int page, int size);
+    boolean existsById(Long restaurantId);
 }
 

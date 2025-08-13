@@ -53,4 +53,9 @@ public class RestaurantServiceImpl implements RestaurantService {
                 restaurantPage.isLast()
         );
     }
+
+    @Override
+    public boolean existsById(Long restaurantId) {
+        return restaurantServicePort.existsById(restaurantId);
+    }
 }
